@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f7f8f5">
+    <title>DriveFair — Insurance that moves with you</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <a class="brand" href="#" aria-label="DriveFair home">
+          <span class="brand-mark"><span></span><span></span><span></span></span>
+          <span>drivefair<span class="brand-dot">.</span></span>
+        </a>
+        <div class="workspace-label">YOUR SPACE</div>
+        <nav class="main-nav" aria-label="Main navigation">
+          <button class="nav-item active" data-page="overview"><span class="nav-icon">◫</span>Overview</button>
+          <button class="nav-item" data-page="trips"><span class="nav-icon">⌁</span>My trips</button>
+          <button class="nav-item" data-page="claims"><span class="nav-icon">▤</span>Claims <span class="nav-count" id="claim-count"></span></button>
+          <button class="nav-item" data-page="pricing"><span class="nav-icon">◈</span>My coverage</button>
+        </nav>
+        <div class="sidebar-bottom">
+          <div class="help-card">
+            <div class="help-icon">✳</div>
+            <strong>Here when you need us</strong>
+            <p>Questions about your cover? We're one tap away.</p>
+            <button class="text-button" id="help-button">Get support <span>↗</span></button>
+          </div>
+          <button class="nav-item" data-page="privacy"><span class="nav-icon">◉</span>Privacy & data</button>
+          <div class="profile">
+            <div class="avatar">JD</div>
+            <div><strong>Jordan Davis</strong><span>Member since 2024</span></div>
+            <button class="more-button" aria-label="More account options">···</button>
+          </div>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <div class="breadcrumbs"><span>My space</span><span class="crumb-divider">/</span><strong id="breadcrumb-current">Overview</strong></div>
+          <div class="top-actions">
+            <span class="secure-label"><span class="secure-dot"></span> Your data is protected</span>
+            <button class="icon-button notification-button" aria-label="Notifications">♧<i></i></button>
+          </div>
+        </header>
+
+        <section class="page active" id="page-overview">
+          <div class="welcome-row">
+            <div>
+              <div class="eyebrow"><span class="eyebrow-line"></span> MONDAY, OCTOBER 20, 2026</div>
+              <h1>Good morning, Jordan <span class="wave">✳</span></h1>
+              <p class="page-intro">Your driving, your data, your deal. Here's your latest.</p>
+            </div>
+            <button class="button button-primary" id="new-trip-button"><span class="button-plus">＋</span> Log a trip</button>
+          </div>
+
+          <div class="overview-grid">
+            <article class="card score-card">
+              <div class="card-heading"><div><div class="eyebrow">YOUR DRIVE SCORE</div><h2>Looking good, Jordan.</h2></div><button class="info-button" title="Illustrative score starts at 95: hard braking −16, rapid acceleration −8, sharp turns −10, evening driving −4. Scores guide feedback, not fault.">i</button></div>
+              <div class="score-content">
+                <div class="score-ring" aria-label="Driving score 86 out of 100"><div><strong id="drive-score">86</strong><span>out of 100</span></div></div>
+                <div class="score-copy"><span class="pill pill-green"><span>↗</span> 4 pts this month</span><p>You're in the <strong>top 18%</strong> of careful drivers this month.</p><button class="inline-link" data-go="trips">See what's driving your score <span>→</span></button></div>
+              </div>
+              <div class="score-foot"><span>Needs a little love</span><div class="score-track"><span></span></div><span>Excellent</span></div>
+            </article>
+
+            <article class="card premium-card">
+              <div class="card-heading"><div><div class="eyebrow">THIS MONTH'S ESTIMATE</div><h2>Your premium</h2></div><span class="premium-icon">↗</span></div>
+              <div class="premium-amount"><span class="currency">$</span><strong id="premium-total">64</strong><span class="amount-cents">.80</span><span class="amount-period">/ month</span></div>
+              <div class="premium-change"><span>↓ $8.20</span> from last month</div>
+              <div class="premium-divider"></div>
+              <div class="mini-breakdown"><div><span>Base coverage</span><strong>$48.00</strong></div><div><span>Driving & distance</span><strong>$22.80</strong></div><div class="discount-row"><span>Safe driver reward</span><strong>−$6.00</strong></div></div>
+              <button class="inline-link" data-go="pricing">See your full breakdown <span>→</span></button>
+            </article>
+          </div>
+
+          <div class="section-heading"><div><div class="eyebrow">YOUR ACTIVITY</div><h2>It's been a good month on the road.</h2></div><button class="inline-link" data-go="trips">All trips <span>→</span></button></div>
+          <div class="stats-grid">
+            <article class="stat-card"><div class="stat-top"><span class="stat-icon icon-miles">↗</span><span class="stat-trend">−12% vs last month</span></div><strong id="miles-stat">386 <small>mi</small></strong><span class="stat-label">Miles driven</span><div class="sparkline spark-green"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></article>
+            <article class="stat-card"><div class="stat-top"><span class="stat-icon icon-trips">⌁</span><span class="stat-caption">This month</span></div><strong id="trip-count">24</strong><span class="stat-label">Trips completed</span><div class="sparkline spark-blue"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></article>
+            <article class="stat-card"><div class="stat-top"><span class="stat-icon icon-events">✳</span><span class="stat-trend">−3 this month</span></div><strong id="event-count">2</strong><span class="stat-label">Driving events</span><div class="sparkline spark-orange"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></article>
+          </div>
+
+          <div class="section-heading recent-heading"><div><div class="eyebrow">LATEST JOURNEYS</div><h2>Your recent trips</h2></div><button class="inline-link" data-go="trips">View trip history <span>→</span></button></div>
+          <div class="card trip-list-card"><div class="trip-list" id="recent-trips"></div></div>
+          <p class="disclaimer">Your DriveFair score is for guidance and rewards only. It is not a measure of fault. Premium shown is an estimate and may change.</p>
+        </section>
+
+        <section class="page" id="page-trips">
+          <div class="welcome-row page-title-row"><div><div class="eyebrow"><span class="eyebrow-line"></span> YOUR JOURNEYS</div><h1>Every trip tells a story.</h1><p class="page-intro">See how your driving adds up. Your trips belong to you.</p></div><button class="button button-primary" id="trips-log-button"><span class="button-plus">＋</span> Log a trip</button></div>
+          <div class="trip-summary-row"><article class="card summary-chip"><span class="stat-icon icon-miles">↗</span><div><strong id="trip-miles-summary">386 mi</strong><span>Distance this month</span></div></article><article class="card summary-chip"><span class="stat-icon icon-trips">⌁</span><div><strong id="trip-number-summary">24 trips</strong><span>Trips this month</span></div></article><article class="card summary-chip"><span class="stat-icon icon-events">✳</span><div><strong id="average-score-summary">86 / 100</strong><span>Average trip score</span></div></article></div>
+          <div class="section-heading trips-section-heading"><div><div class="eyebrow">OCTOBER 2026</div><h2>Recent trips</h2></div><label class="select-wrap"><span class="sr-only">Filter trips</span><select id="trip-filter"><option value="all">All trips</option><option value="careful">Careful trips</option><option value="events">Trips with events</option></select></label></div>
+          <div class="card full-trip-list" id="all-trips"></div>
+          <div class="privacy-note"><span>◉</span><div><strong>It's your journey data.</strong><p>Only you can see these trip details. Manage what gets collected in <button class="inline-link" data-go="privacy">Privacy & data</button>.</p></div></div>
+        </section>
+
+        <section class="page" id="page-claims">
+          <div class="welcome-row page-title-row"><div><div class="eyebrow"><span class="eyebrow-line"></span> HERE TO HELP</div><h1>Claims, made simpler.</h1><p class="page-intro">We’ll help you get the details together, at your pace.</p></div><button class="button button-primary" id="start-claim-button"><span class="button-plus">＋</span> Start a claim</button></div>
+          <div class="claims-banner"><div class="claims-banner-icon">✳</div><div><strong>Had an accident? First, make sure everyone is safe.</strong><p>If anyone is hurt or in immediate danger, call your local emergency number. DriveFair is not an emergency service.</p></div></div>
+          <div class="section-heading"><div><div class="eyebrow">YOUR CLAIMS</div><h2>Claim activity</h2></div></div>
+          <div class="card claim-card" id="claim-list"></div>
+          <div class="claims-how"><div><span class="step-number">01</span><strong>Tell us what happened</strong><p>Share the basics when you're ready. You stay in control.</p></div><div><span class="step-number">02</span><strong>We gather the details</strong><p>Review trip context and add any photos or information.</p></div><div><span class="step-number">03</span><strong>A person reviews it</strong><p>A claims specialist follows up. No automated fault decisions.</p></div></div>
+        </section>
+
+        <section class="page" id="page-pricing">
+          <div class="welcome-row page-title-row"><div><div class="eyebrow"><span class="eyebrow-line"></span> COVER THAT FITS YOUR LIFE</div><h1>Choose how you pay.</h1><p class="page-intro">Switch plans any time. Your estimate updates as you drive.</p></div><span class="member-badge">POLICY DF-2048-0193</span></div>
+          <div class="pricing-current"><div class="current-tag">YOUR CURRENT PLAN</div><div class="current-plan-main"><div><h2 id="selected-plan-name">Pay per mile</h2><p id="selected-plan-desc">A base rate plus the miles you actually drive.</p></div><div class="current-estimate"><strong id="pricing-total">$64.80</strong><span>estimated this month</span></div></div><div class="pricing-breakdown"><div><span>Base coverage <i>?</i></span><strong>$48.00</strong></div><div><span>Distance · 386 mi × $0.059</span><strong>$22.80</strong></div><div><span>Safe driver reward</span><strong class="green-text">−$6.00</strong></div><div class="breakdown-total"><span>Estimated monthly total</span><strong id="breakdown-total">$64.80</strong></div></div></div>
+          <div class="section-heading plan-heading"><div><div class="eyebrow">FIND YOUR FIT</div><h2>Plans built around your driving.</h2></div></div>
+          <div class="plan-grid">
+            <article class="plan-card selected" data-plan="mile"><div class="plan-card-top"><span class="plan-icon">↗</span><span class="plan-check">✓</span></div><h3>Pay per mile</h3><p>Great if your car spends more time parked.</p><div class="plan-rate"><strong>5.9¢</strong><span>/ mile + $48 base</span></div><button class="plan-select-button" data-select-plan="mile">Current plan</button></article>
+            <article class="plan-card" data-plan="journey"><div class="plan-card-top"><span class="plan-icon icon-blue">⌁</span><span class="plan-check">✓</span></div><h3>Pay per journey</h3><p>Pay a flat amount per trip, with a clear score adjustment.</p><div class="plan-rate"><strong>From $1.20</strong><span>/ journey</span></div><button class="plan-select-button" data-select-plan="journey">See this plan</button></article>
+            <article class="plan-card" data-plan="monthly"><div class="plan-card-top"><span class="plan-icon icon-purple">◈</span><span class="plan-check">✓</span></div><h3>Predictable monthly</h3><p>One steady price, with rewards for safer driving.</p><div class="plan-rate"><strong>$79</strong><span>/ month before rewards</span></div><button class="plan-select-button" data-select-plan="monthly">See this plan</button></article>
+          </div>
+          <div class="pricing-footnote"><span>ⓘ</span><p>Illustrative demo only, not a binding quote or actual insurance offer. The score adjustment uses (85 − average trip score) × $0.15, capped between −$4 and +$8; it is shown as a separate line. Real rates require insurer-approved actuarial and fairness validation. A driving score is feedback, not a fault decision.</p></div>
+        </section>
+
+        <section class="page" id="page-privacy">
+          <div class="welcome-row page-title-row"><div><div class="eyebrow"><span class="eyebrow-line"></span> YOUR DATA, YOUR CALL</div><h1>Privacy, in your hands.</h1><p class="page-intro">Choose what DriveFair collects and how it helps you.</p></div><span class="privacy-shield">◉ Private by design</span></div>
+          <div class="privacy-intro"><div class="privacy-intro-icon">◉</div><div><strong>We only use data to support your cover.</strong><p>Trip information helps estimate usage and explain your score. It is not sold to advertisers. You can pause collection, export your information, or delete demo data here.</p></div></div>
+          <div class="section-heading privacy-controls-heading"><div><div class="eyebrow">YOUR CONTROLS</div><h2>Data & permissions</h2></div></div>
+          <div class="card privacy-settings">
+            <div class="setting-row"><div class="setting-icon">⌖</div><div class="setting-copy"><strong>Trip tracking</strong><p>Control trip recording in this demo. Sample trips are simulated; no phone sensors or location are accessed.</p></div><label class="switch"><input type="checkbox" id="tracking-toggle" checked><span class="switch-slider"></span><span class="sr-only">Enable trip tracking</span></label></div>
+            <div class="setting-row"><div class="setting-icon setting-blue">◷</div><div class="setting-copy"><strong>Precise trip locations</strong><p>Keep start and end points to show trip routes. Turn off to keep distance and score only.</p></div><label class="switch"><input type="checkbox" id="location-toggle" checked><span class="switch-slider"></span><span class="sr-only">Enable precise locations</span></label></div>
+            <div class="setting-row"><div class="setting-icon setting-orange">✳</div><div class="setting-copy"><strong>Incident assistance</strong><p>A simulated incident signal can offer an in-app safety check. It never starts or submits a claim automatically.</p></div><label class="switch"><input type="checkbox" id="incident-toggle" checked><span class="switch-slider"></span><span class="sr-only">Enable incident assistance</span></label></div>
+            <div class="setting-row"><div class="setting-icon setting-purple">▣</div><div class="setting-copy"><strong>Vehicle connectivity</strong><p>OEM / vehicle connection is not connected in this demo. No vehicle data is being accessed.</p></div><span class="not-connected">Not connected</span></div>
+          </div>
+          <div class="data-actions"><div><div class="eyebrow">TAKE YOUR DATA WITH YOU</div><h2>Your data should be portable.</h2><p>Export a copy of your demo profile and trip history, or clear locally saved demo data from this browser.</p></div><div class="data-action-buttons"><button class="button button-secondary" id="export-button">↓ Export my data</button><button class="button button-danger" id="delete-button">Clear demo data</button></div></div>
+          <p class="privacy-footnote">DriveFair is a hackathon demo. Information is stored in this browser only; there is no insurer backend, account system, or real policy connected.</p>
+        </section>
+      </main>
+      <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    </div>
+
+    <dialog id="trip-dialog" class="modal">
+      <form method="dialog"><button class="modal-close" aria-label="Close">×</button></form>
+      <div class="modal-icon">⌁</div><div class="eyebrow">ADD TO YOUR JOURNEYS</div><h2>Log a sample trip</h2><p class="modal-description">Choose an example trip to see how DriveFair explains the score and estimate. This creates demo data only.</p>
+      <div class="sample-options">
+        <button class="sample-option" data-sample="smooth"><span><strong>Smooth commute</strong><small>12 mi · daytime · no events</small></span><b>＋</b></button>
+        <button class="sample-option" data-sample="mixed"><span><strong>City errands</strong><small>8 mi · daytime · 1 hard brake</small></span><b>＋</b></button>
+        <button class="sample-option" data-sample="night"><span><strong>Evening drive</strong><small>18 mi · evening · smooth driving</small></span><b>＋</b></button>
+      </div>
+      <p class="modal-footnote">Sampled sensor data is illustrative and is not used to determine real insurance eligibility or fault.</p>
+    </dialog>
+
+    <dialog id="claim-dialog" class="modal claim-modal">
+      <form method="dialog"><button class="modal-close" aria-label="Close">×</button></form>
+      <div class="modal-icon modal-orange">✳</div><div class="eyebrow">INCIDENT SUPPORT</div><h2>Let's start with safety.</h2><p class="modal-description">Are you and everyone involved safe right now?</p>
+      <div class="safety-actions"><button id="safe-button" class="button button-primary">Yes, everyone is safe</button><button id="emergency-button" class="button button-secondary">No, I need emergency help</button></div>
+      <p class="modal-footnote">If anyone is injured or in immediate danger, call your local emergency number. DriveFair cannot contact emergency services for you.</p>
+      <form class="claim-details" id="claim-details" hidden>
+        <label>When did it happen?<input id="incident-date" type="datetime-local" required></label>
+        <label>What kind of incident?
+          <select id="incident-type" required><option value="Collision">Collision</option><option value="Vehicle damage">Vehicle damage</option><option value="Theft or break-in">Theft or break-in</option><option value="Other">Other</option></select>
+        </label>
+        <label>Briefly describe what happened<textarea id="incident-description" rows="3" maxlength="1000" placeholder="Share only what you're comfortable including in this draft." required></textarea></label>
+        <label class="consent-option"><input type="checkbox" id="include-trip-summary"><span><strong>Include my latest trip summary</strong><small>Distance, score, and detected events only—no exact locations. This is optional.</small></span></label>
+        <button class="button button-primary" type="submit">Save claim draft</button>
+        <p class="modal-footnote">Saved locally in this demo. It is not submitted, and a person—not an automated score—would review a real claim.</p>
+      </form>
+      <div class="claim-next-step" id="claim-success" hidden><div class="claim-success-icon">✓</div><strong>Claim draft saved</strong><p id="claim-success-copy">Your draft is saved locally. It has not been submitted.</p><button class="button button-primary" id="finish-claim-button">View claim draft</button></div>
+    </dialog>
+
+    <script src="app.js"></script>
+  </body>
+</html>
