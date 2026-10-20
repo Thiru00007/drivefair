@@ -1,6 +1,6 @@
 # DriveFair
 
-DriveFair is a Streamlit hackathon prototype for transparent, usage-based motor insurance. It has account-scoped profiles, an app-owned SQLite database, trip scoring, itemized premium estimates, claim drafts, data export, and light/dark themes.
+DriveFair is an India-focused Streamlit hackathon prototype for transparent, usage-based motor insurance. It has account-scoped profiles, an app-owned SQLite database, trip scoring, itemized INR estimates, claim drafts, data export, English/Hindi interface options, and light/dark themes.
 
 ## Run locally
 
@@ -20,7 +20,9 @@ By default, SQLite creates `data/drivefair.db`. Change its location with `DRIVEF
 - Create an account and sign in. Passwords are stored as salted PBKDF2 hashes, never plaintext.
 - Keep preferences, trips, and claim drafts isolated by account in SQLite.
 - Log trips and see the input events behind the illustrative trip score.
-- Preview pay-per-mile, pay-per-journey, and monthly coverage with every estimate itemized.
+- Preview pay-per-kilometre, pay-per-trip, and monthly coverage with every estimate itemized.
+- Use Indian rupees, kilometres, India Standard Time, Chennai sample routes, and switch between English and Hindi. Existing accounts receive a backward-compatible language preference defaulting to English.
+- See an India-specific safety prompt with emergency number 112 and an explanation that third-party motor insurance is mandatory.
 - Create a claim draft only after the safety prompt; optional trip context excludes exact locations.
 - Toggle precise-location display, pause trip recording, export account data, and reset demo data.
 - Use the sidebar to switch between light and dark mode. The selected theme is saved per account.
@@ -34,7 +36,9 @@ estimated monthly premium =
   base coverage + usage charge + score adjustment − safe-driving reward
 ```
 
-The score adjustment is `(85 − average trip score) × $0.15`, capped from −$4 to +$8. The base, mileage, journey, and reward amounts are sample values—not a quote, policy term, or approved actuarial model.
+All amounts are illustrative INR demo values: ₹199 base, ₹1.50/km, ₹20/trip, or ₹699/month, with a ₹50 demo reward. The score adjustment is `(85 − average trip score) × ₹5`, capped from −₹100 to +₹200. These rates are not a quote, policy term, or approved actuarial model.
+
+**India market and compliance notice:** Third-party motor insurance is mandatory in India. This demo neither provides nor verifies any cover and must not be used to meet legal insurance requirements. It is not connected to an insurer or IRDAI systems. Estimates exclude applicable taxes and do not account for vehicle IDV, vehicle class, registration zone, insurer-specific rates, add-ons, or policy terms. Confirm cover and price with a licensed insurer.
 
 ## Publish on GitHub and Streamlit Community Cloud
 
@@ -50,4 +54,4 @@ The app uses SQLite to provide a simple, self-contained database and account-sco
 
 For durable multi-user deployment, migrate the repository layer to managed PostgreSQL (for example, Supabase or Neon), configure its connection string using Streamlit secrets, and add production authentication, email verification, rate limiting, backups, audit logging, encryption, retention controls, and a security/privacy review. That production database and its credentials are not configured by this demo.
 
-No real phone sensors, GPS, OEM connectivity, insurer backend, claim submission, or emergency-service integration is active. Scores are feedback, never fault decisions. Premium estimates are not quotes or policies.
+No real phone sensors, GPS, OEM connectivity, insurer backend, claim submission, or emergency-service integration is active. The claim page displays India's emergency number (112), but DriveFair cannot contact responders. Scores are feedback, never fault decisions. Premium estimates are not quotes or policies.

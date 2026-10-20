@@ -13,17 +13,17 @@ SCORE_PENALTIES = {
 }
 
 PLAN_NAMES = {
-    "mile": "Pay per mile",
-    "journey": "Pay per journey",
+    "mile": "Pay per kilometre",
+    "journey": "Pay per trip",
     "monthly": "Predictable monthly",
 }
 
 DEFAULT_RATES = {
-    "base": 48.00,
-    "per_mile": 0.059,
-    "per_journey": 1.20,
-    "monthly": 79.00,
-    "safe_driver_reward": 6.00,
+    "base": 199.00,
+    "per_km": 1.50,
+    "per_journey": 20.00,
+    "monthly": 699.00,
+    "safe_driver_reward": 50.00,
 }
 
 
@@ -49,36 +49,36 @@ def average_score(trips: list[Mapping[str, object]]) -> int:
 
 
 def score_adjustment(score: int) -> float:
-    """Calculate the disclosed score adjustment, capped from −$4 to +$8."""
-    raw_adjustment = (85 - score) * 0.15
-    return round(max(-4.0, min(8.0, raw_adjustment)), 2)
+    """Calculate the disclosed score adjustment, capped from −₹100 to +₹200."""
+    raw_adjustment = (85 - score) * 5.0
+    return round(max(-100.0, min(200.0, raw_adjustment)), 2)
 
 
 def estimate_premium(
     plan: str,
-    mileage: float,
+    distance_km: float,
     trip_count: int,
     trip_average: int,
 ) -> dict[str, float | int | str]:
-    """Return the itemized illustrative monthly estimate for a selected plan."""
+    """Return an itemized, illustrative monthly estimate using kilometres and INR."""
     if plan not in PLAN_NAMES:
         raise ValueError("plan must be one of: mile, journey, monthly")
-    if mileage < 0 or trip_count < 0 or not 0 <= trip_average <= 100:
+    if distance_km < 0 or trip_count < 0 or not 0 <= trip_average <= 100:
         raise ValueError("mileage, trip count, or average score is out of range")
 
     adjustment = score_adjustment(trip_average)
     if plan == "journey":
         base = DEFAULT_RATES["base"]
         usage = trip_count * DEFAULT_RATES["per_journey"]
-        usage_label = f"{trip_count} trips × ${DEFAULT_RATES['per_journey']:.2f}"
+        usage_label = f"{trip_count} trips × ₹{DEFAULT_RATES['per_journey']:.2f}"
     elif plan == "monthly":
         base = DEFAULT_RATES["monthly"]
         usage = 0.0
         usage_label = "Included in monthly rate"
     else:
         base = DEFAULT_RATES["base"]
-        usage = mileage * DEFAULT_RATES["per_mile"]
-        usage_label = f"{mileage:g} mi × ${DEFAULT_RATES['per_mile']:.3f}"
+        usage = distance_km * DEFAULT_RATES["per_km"]
+        usage_label = f"{distance_km:g} km × ₹{DEFAULT_RATES['per_km']:.2f}"
 
     reward = DEFAULT_RATES["safe_driver_reward"]
     total = max(0.0, base + usage + adjustment - reward)

@@ -3,6 +3,7 @@ import unittest
 from pathlib import Path
 
 from database import DriveFairDatabase
+from localization import translate
 from scoring import average_score, estimate_premium, score_trip
 
 
@@ -21,8 +22,9 @@ class ScoringTests(unittest.TestCase):
 
     def test_premium_line_items_sum_to_total(self) -> None:
         estimate = estimate_premium("mile", 386, 24, 90)
-        self.assertEqual(estimate["total"], 64.02)
-        self.assertEqual(estimate["score_adjustment"], -0.75)
+        self.assertEqual(estimate["total"], 703.0)
+        self.assertEqual(estimate["score_adjustment"], -25.0)
+        self.assertEqual(estimate["usage"], 579.0)
         self.assertAlmostEqual(
             estimate["base"] + estimate["usage"] + estimate["score_adjustment"] - estimate["reward"],
             estimate["total"],
@@ -30,6 +32,18 @@ class ScoringTests(unittest.TestCase):
 
     def test_average_score_has_safe_empty_default(self) -> None:
         self.assertEqual(average_score([]), 95)
+
+    def test_indian_plan_rates_are_in_rupees_and_kilometres(self) -> None:
+        per_km = estimate_premium("mile", 10, 0, 85)
+        per_trip = estimate_premium("journey", 10, 2, 85)
+        self.assertEqual(per_km["usage"], 15.0)
+        self.assertEqual(per_km["usage_label"], "10 km × ₹1.50")
+        self.assertEqual(per_trip["usage"], 40.0)
+
+    def test_hindi_catalogue_translates_and_falls_back_to_english(self) -> None:
+        self.assertEqual(translate("Claims", "हिन्दी"), "दावे")
+        self.assertEqual(translate("Claims", "English"), "Claims")
+        self.assertEqual(translate("Unknown copy", "हिन्दी"), "Unknown copy")
 
 
 class DatabaseTests(unittest.TestCase):
@@ -52,7 +66,7 @@ class DatabaseTests(unittest.TestCase):
 
     def test_seed_data_and_score_summary(self) -> None:
         totals = self.db.monthly_totals(self.user_id)
-        self.assertEqual(totals["miles"], 386)
+        self.assertAlmostEqual(totals["miles"], 310.686 + (38.5 / 1.60934), places=1)
         self.assertEqual(totals["trip_count"], 24)
         self.assertEqual(totals["event_count"], 2)
         self.assertEqual(average_score(self.db.list_trips(self.user_id)), 90)
@@ -95,6 +109,13 @@ class DatabaseTests(unittest.TestCase):
         self.assertEqual(self.db.list_claims(self.user_id), [])
         self.assertEqual(self.db.get_preferences(self.user_id)["plan"], "mile")
         self.assertTrue(self.db.get_preferences(self.user_id)["tracking"])
+        self.assertEqual(self.db.get_preferences(self.user_id)["language"], "English")
+
+    def test_language_preference_persists_and_rejects_unsupported_values(self) -> None:
+        self.db.update_preferences(self.user_id, language="हिन्दी")
+        self.assertEqual(self.db.get_preferences(self.user_id)["language"], "हिन्दी")
+        with self.assertRaises(ValueError):
+            self.db.update_preferences(self.user_id, language="Tamil")
 
     def test_invalid_registration_and_claim_input_are_rejected(self) -> None:
         with self.assertRaises(ValueError):

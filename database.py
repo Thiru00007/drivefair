@@ -18,42 +18,43 @@ from typing import Any, Iterator
 from scoring import score_trip
 
 DEFAULT_DB_PATH = Path(os.environ.get("DRIVEFAIR_DB_PATH", "data/drivefair.db"))
+KM_PER_MILE = 1.60934
 PASSWORD_ITERATIONS = 310_000
 EMAIL_PATTERN = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
 SAMPLE_TRIPS = [
     {
-        "origin": "Home, Brooklyn",
-        "destination": "Studio, Manhattan",
+        "origin": "Home, Velachery",
+        "destination": "Office, Guindy",
         "date": "2026-10-20T08:42:00",
-        "miles": 12.0,
+        "miles": 7.5 / KM_PER_MILE,
         "duration": "28 min",
         "signals": {},
         "event": "",
     },
     {
-        "origin": "Studio, Manhattan",
-        "destination": "Market, Williamsburg",
+        "origin": "Guindy",
+        "destination": "T. Nagar",
         "date": "2026-10-19T18:18:00",
-        "miles": 8.0,
+        "miles": 5.0 / KM_PER_MILE,
         "duration": "31 min",
         "signals": {"hard_brakes": 1},
         "event": "Hard braking",
     },
     {
-        "origin": "Home, Brooklyn",
-        "destination": "Riverside Park",
+        "origin": "Velachery",
+        "destination": "Marina Beach",
         "date": "2026-10-18T10:05:00",
-        "miles": 16.0,
+        "miles": 12.0 / KM_PER_MILE,
         "duration": "34 min",
         "signals": {},
         "event": "",
     },
     {
-        "origin": "Friends, Queens",
-        "destination": "Home, Brooklyn",
+        "origin": "Adyar",
+        "destination": "Velachery",
         "date": "2026-10-17T21:36:00",
-        "miles": 18.0,
+        "miles": 14.0 / KM_PER_MILE,
         "duration": "39 min",
         "signals": {"night_driving": True},
         "event": "",
@@ -136,10 +137,11 @@ class DriveFairDatabase:
                     user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
                     theme TEXT NOT NULL DEFAULT 'light' CHECK(theme IN ('light', 'dark')),
                     plan TEXT NOT NULL DEFAULT 'mile' CHECK(plan IN ('mile', 'journey', 'monthly')),
+                    language TEXT NOT NULL DEFAULT 'English' CHECK(language IN ('English', 'हिन्दी')),
                     tracking INTEGER NOT NULL DEFAULT 1 CHECK(tracking IN (0, 1)),
                     precise_locations INTEGER NOT NULL DEFAULT 1 CHECK(precise_locations IN (0, 1)),
                     incident_assistance INTEGER NOT NULL DEFAULT 1 CHECK(incident_assistance IN (0, 1)),
-                    historic_miles REAL NOT NULL DEFAULT 332.0,
+                    historic_miles REAL NOT NULL DEFAULT 310.686,
                     historic_trips INTEGER NOT NULL DEFAULT 20,
                     historic_events INTEGER NOT NULL DEFAULT 1
                 );
@@ -172,6 +174,15 @@ class DriveFairDatabase:
                 CREATE INDEX IF NOT EXISTS claims_user_date ON claims(user_id, created_at DESC);
                 """
             )
+            preference_columns = {
+                row["name"]
+                for row in connection.execute("PRAGMA table_info(preferences)").fetchall()
+            }
+            if "language" not in preference_columns:
+                connection.execute(
+                    "ALTER TABLE preferences ADD COLUMN language TEXT NOT NULL "
+                    "DEFAULT 'English' CHECK(language IN ('English', 'हिन्दी'))"
+                )
 
     def create_user(self, email: str, password: str) -> int:
         normalized_email = email.strip().lower()
@@ -246,6 +257,7 @@ class DriveFairDatabase:
         allowed = {
             "theme": ("light", "dark"),
             "plan": ("mile", "journey", "monthly"),
+            "language": ("English", "हिन्दी"),
             "tracking": (True, False),
             "precise_locations": (True, False),
             "incident_assistance": (True, False),
@@ -297,7 +309,7 @@ class DriveFairDatabase:
         if not origin.strip() or not destination.strip():
             raise ValueError("Origin and destination are required.")
         if not 0 < miles <= 1_000:
-            raise ValueError("Trip distance must be between 0 and 1,000 miles.")
+            raise ValueError("Trip distance must be between 0 and 1,000 kilometres.")
         score = score_trip(signals)
         with self.connect() as connection:
             cursor = connection.execute(
@@ -427,7 +439,8 @@ class DriveFairDatabase:
                 UPDATE preferences
                 SET theme = 'light', plan = 'mile', tracking = 1,
                     precise_locations = 1, incident_assistance = 1,
-                    historic_miles = 332, historic_trips = 20, historic_events = 1
+                    language = 'English', historic_miles = 310.686, historic_trips = 20,
+                    historic_events = 1
                 WHERE user_id = ?
                 """,
                 (user_id,),
