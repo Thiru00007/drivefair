@@ -7,6 +7,7 @@ from datetime import datetime
 from typing import Any
 from zoneinfo import ZoneInfo
 
+import pandas as pd
 import streamlit as st
 
 from database import KM_PER_MILE, DriveFairDatabase
@@ -110,13 +111,36 @@ def apply_theme(theme: str) -> None:
         div[data-baseweb="input"] > div, div[data-baseweb="select"] > div, textarea {{
           background: var(--df-surface) !important; color: var(--df-text) !important; border-color: var(--df-line) !important;
         }}
-        .stButton > button, .stDownloadButton > button {{ border-radius: 8px; border-color: var(--df-line); }}
+        [data-testid="stSelectbox"] [role="group"] {{
+          background: var(--df-surface) !important; border: 1px solid var(--df-line) !important;
+        }}
+        [data-testid="stSelectbox"] input[role="combobox"] {{ color: var(--df-text) !important; }}
+        [role="listbox"] {{ background: var(--df-surface) !important; }}
+        [role="option"] {{ color: var(--df-text) !important; }}
+        .stButton > button, .stDownloadButton > button {{
+          background: var(--df-surface); color: var(--df-text);
+          border-radius: 8px; border-color: var(--df-line);
+        }}
+        .stButton > button:hover, .stDownloadButton > button:hover {{
+          background: var(--df-elevated); color: var(--df-text); border-color: var(--df-line);
+        }}
         .stButton > button[kind="primary"] {{ background: #286746; border-color: #286746; color: white; }}
         hr {{ border-color: var(--df-line); }}
         </style>
         """,
         unsafe_allow_html=True,
     )
+
+
+def render_table(rows: list[dict[str, Any]]) -> None:
+    dark = st.session_state.get("dark_mode", False)
+    surface = "#18221c" if dark else "#ffffff"
+    elevated = "#202b24" if dark else "#f4f7f2"
+    text = "#edf3ee" if dark else "#1b2820"
+    styled_rows = pd.DataFrame(rows).style.set_properties(
+        **{"background-color": surface, "color": text}
+    )
+    st.dataframe(styled_rows, hide_index=True, width="stretch")
 
 
 def money(value: float | int) -> str:
@@ -287,7 +311,7 @@ def render_overview(
             },
             {T("Premium component"): T("Safe-driving reward"), T("Estimate"): f'−{money(float(pricing["reward"]))}'},
         ]
-        st.dataframe(rows, hide_index=True, width="stretch")
+        render_table(rows)
         st.caption(T("Estimate is not a quote or a policy change. Review the full itemization in My coverage."))
     with score_column:
         render_score_card(score)
@@ -407,7 +431,7 @@ def render_trips(
                 T("Events"): trip["event"] or T("None"),
             }
         )
-    st.dataframe(rows, hide_index=True, width="stretch")
+    render_table(rows)
     st.caption(T("Trip scores are illustrative driving feedback, not a measure of responsibility or fault."))
     with st.expander(T("How the demo score is calculated")):
         st.markdown(T(
@@ -546,7 +570,7 @@ def render_coverage(
             {T("Component"): T("Safe-driving reward"), T("Estimate"): f'−{money(float(pricing["reward"]))}'},
             {T("Component"): T("Monthly estimate"), T("Estimate"): money(float(pricing["total"]))},
         ]
-        st.dataframe(rows, hide_index=True, width="stretch")
+        render_table(rows)
     st.subheader(T("Plan options"))
     cards = st.columns(3)
     rates = [

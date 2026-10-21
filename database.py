@@ -60,6 +60,12 @@ SAMPLE_TRIPS = [
         "event": "",
     },
 ]
+LEGACY_SAMPLE_ROUTES = (
+    ("Home, Brooklyn", "Studio, Manhattan"),
+    ("Studio, Manhattan", "Market, Williamsburg"),
+    ("Home, Brooklyn", "Riverside Park"),
+    ("Friends, Queens", "Home, Brooklyn"),
+)
 
 
 def utc_now() -> str:
@@ -183,6 +189,7 @@ class DriveFairDatabase:
                     "ALTER TABLE preferences ADD COLUMN language TEXT NOT NULL "
                     "DEFAULT 'English' CHECK(language IN ('English', 'हिन्दी'))"
                 )
+            self._migrate_legacy_sample_trips(connection)
 
     def create_user(self, email: str, password: str) -> int:
         normalized_email = email.strip().lower()
@@ -240,6 +247,26 @@ class DriveFairDatabase:
                     now,
                 ),
             )
+
+    def _migrate_legacy_sample_trips(self, connection: sqlite3.Connection) -> None:
+        route_conditions = " OR ".join(
+            "(origin = ? AND destination = ?)" for _ in LEGACY_SAMPLE_ROUTES
+        )
+        parameters = tuple(value for route in LEGACY_SAMPLE_ROUTES for value in route)
+        user_ids = connection.execute(
+            f"""
+            SELECT DISTINCT user_id
+            FROM trips
+            WHERE is_sample = 1 AND ({route_conditions})
+            """,
+            parameters,
+        ).fetchall()
+        for row in user_ids:
+            user_id = int(row["user_id"])
+            connection.execute(
+                "DELETE FROM trips WHERE user_id = ? AND is_sample = 1", (user_id,)
+            )
+            self._insert_sample_trips(connection, user_id)
 
     def get_preferences(self, user_id: int) -> dict[str, Any]:
         with self.connect() as connection:

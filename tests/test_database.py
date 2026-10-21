@@ -2,7 +2,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from database import DriveFairDatabase
+from database import SAMPLE_TRIPS, DriveFairDatabase
 from localization import translate
 from scoring import average_score, estimate_premium, score_trip
 
@@ -70,6 +70,57 @@ class DatabaseTests(unittest.TestCase):
         self.assertEqual(totals["trip_count"], 24)
         self.assertEqual(totals["event_count"], 2)
         self.assertEqual(average_score(self.db.list_trips(self.user_id)), 90)
+
+    def test_legacy_us_sample_trips_are_replaced_without_changing_real_trips(self) -> None:
+        legacy_routes = (
+            ("Home, Brooklyn", "Studio, Manhattan"),
+            ("Studio, Manhattan", "Market, Williamsburg"),
+            ("Home, Brooklyn", "Riverside Park"),
+            ("Friends, Queens", "Home, Brooklyn"),
+        )
+        with self.db.connect() as connection:
+            for sample_trip, (origin, destination) in zip(
+                connection.execute(
+                    "SELECT id FROM trips WHERE user_id = ? AND is_sample = 1 ORDER BY id",
+                    (self.user_id,),
+                ).fetchall(),
+                legacy_routes,
+            ):
+                connection.execute(
+                    "UPDATE trips SET origin = ?, destination = ? WHERE id = ?",
+                    (origin, destination, sample_trip["id"]),
+                )
+        real_trip_id = self.db.add_trip(
+            self.user_id,
+            origin="User-entered origin",
+            destination="User-entered destination",
+            started_at="2026-10-20T09:00:00",
+            miles=8,
+            duration="20 min",
+            signals={},
+            event="",
+        )
+
+        self.db.initialize()
+
+        trips = self.db.list_trips(self.user_id)
+        sample_routes = {
+            (trip["origin"], trip["destination"])
+            for trip in trips
+            if trip["is_sample"]
+        }
+        self.assertEqual(
+            sample_routes,
+            {
+                (trip["origin"], trip["destination"])
+                for trip in SAMPLE_TRIPS
+            },
+        )
+        real_trip = next(trip for trip in trips if trip["id"] == real_trip_id)
+        self.assertEqual(
+            (real_trip["origin"], real_trip["destination"]),
+            ("User-entered origin", "User-entered destination"),
+        )
 
     def test_trip_and_claims_are_scoped_to_their_account(self) -> None:
         another_user = self.db.create_user("other@example.test", "another secure password")
