@@ -110,7 +110,7 @@ function applyAppearance() {
   document.getElementById("accent-select").value = state.accent;
   document.getElementById("text-size-select").value = state.textSize;
   document.querySelector('meta[name="theme-color"]').content =
-    state.theme === "dark" ? "#000000" : state.theme === "soft" ? "#696457" : "#f4f6f1";
+    state.theme === "dark" ? "#000000" : state.theme === "soft" ? "#000000" : "#c0cea4";
 }
 
 function freshDefaultState() {
