@@ -3,7 +3,7 @@ import unittest
 from pathlib import Path
 
 from database import SAMPLE_TRIPS, DriveFairDatabase
-from localization import translate
+from localization import LANGUAGES, translate
 from scoring import average_score, estimate_premium, score_trip
 
 
@@ -44,6 +44,18 @@ class ScoringTests(unittest.TestCase):
         self.assertEqual(translate("Claims", "हिन्दी"), "दावे")
         self.assertEqual(translate("Claims", "English"), "Claims")
         self.assertEqual(translate("Unknown copy", "हिन्दी"), "Unknown copy")
+
+    def test_requested_languages_are_available_and_translate_core_labels(self) -> None:
+        self.assertEqual(
+            LANGUAGES,
+            (
+                "English", "हिन्दी", "தமிழ்", "മലയാളം", "తెలుగు",
+                "ಕನ್ನಡ", "Español", "Français", "العربية",
+            ),
+        )
+        for language in LANGUAGES[1:]:
+            self.assertNotEqual(translate("Overview", language), "Overview")
+            self.assertNotEqual(translate("Claims", language), "Claims")
 
 
 class DatabaseTests(unittest.TestCase):
@@ -163,10 +175,43 @@ class DatabaseTests(unittest.TestCase):
         self.assertEqual(self.db.get_preferences(self.user_id)["language"], "English")
 
     def test_language_preference_persists_and_rejects_unsupported_values(self) -> None:
-        self.db.update_preferences(self.user_id, language="हिन्दी")
-        self.assertEqual(self.db.get_preferences(self.user_id)["language"], "हिन्दी")
+        self.db.update_preferences(self.user_id, language="தமிழ்")
+        self.assertEqual(self.db.get_preferences(self.user_id)["language"], "தமிழ்")
         with self.assertRaises(ValueError):
             self.db.update_preferences(self.user_id, language="Tamil")
+
+    def test_existing_hindi_only_language_constraint_is_migrated(self) -> None:
+        with self.db.connect() as connection:
+            connection.execute("ALTER TABLE preferences RENAME TO preferences_newer")
+            connection.execute(
+                """
+                CREATE TABLE preferences (
+                    user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+                    theme TEXT NOT NULL DEFAULT 'light' CHECK(theme IN ('light', 'dark')),
+                    plan TEXT NOT NULL DEFAULT 'mile' CHECK(plan IN ('mile', 'journey', 'monthly')),
+                    language TEXT NOT NULL DEFAULT 'English' CHECK(language IN ('English', 'हिन्दी')),
+                    tracking INTEGER NOT NULL DEFAULT 1 CHECK(tracking IN (0, 1)),
+                    precise_locations INTEGER NOT NULL DEFAULT 1 CHECK(precise_locations IN (0, 1)),
+                    incident_assistance INTEGER NOT NULL DEFAULT 1 CHECK(incident_assistance IN (0, 1)),
+                    historic_miles REAL NOT NULL DEFAULT 310.686,
+                    historic_trips INTEGER NOT NULL DEFAULT 20,
+                    historic_events INTEGER NOT NULL DEFAULT 1
+                )
+                """
+            )
+            connection.execute(
+                """
+                INSERT INTO preferences
+                SELECT user_id, theme, plan, language, tracking, precise_locations,
+                       incident_assistance, historic_miles, historic_trips, historic_events
+                FROM preferences_newer
+                """
+            )
+            connection.execute("DROP TABLE preferences_newer")
+
+        self.db.initialize()
+        self.db.update_preferences(self.user_id, language="தமிழ்")
+        self.assertEqual(self.db.get_preferences(self.user_id)["language"], "தமிழ்")
 
     def test_invalid_registration_and_claim_input_are_rejected(self) -> None:
         with self.assertRaises(ValueError):

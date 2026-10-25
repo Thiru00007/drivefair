@@ -1,6 +1,6 @@
 # DriveFair
 
-DriveFair is an India-focused Streamlit hackathon prototype for transparent, usage-based motor insurance. It has account-scoped profiles, an app-owned SQLite database, trip scoring, itemized INR estimates, claim drafts, data export, English/Hindi interface options, and light/dark themes.
+DriveFair is an India-focused Streamlit hackathon prototype for transparent, usage-based motor insurance. It has account-scoped profiles, an app-owned SQLite database, trip scoring, itemized INR estimates, claim drafts, data export, English, Hindi, Tamil, Malayalam, Telugu, Kannada, Spanish, French, and Arabic interface options, and light/dark themes. The standalone HTML dashboard also offers these languages and liquid-glass button styling.
 
 ## Run locally
 
@@ -10,8 +10,10 @@ Use Python 3.11 or newer:
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
-python -m streamlit run app.py
+python -m streamlit run app.py --server.address 127.0.0.1 --server.port 8501
 ```
+
+Open `http://127.0.0.1:8501` in your browser. Stop the local server with `Ctrl+C`.
 
 By default, SQLite creates `data/drivefair.db`. Change its location with `DRIVEFAIR_DB_PATH`. The database file, WAL files, virtual environments, and Streamlit secrets are excluded from Git.
 
@@ -21,11 +23,15 @@ By default, SQLite creates `data/drivefair.db`. Change its location with `DRIVEF
 - Keep preferences, trips, and claim drafts isolated by account in SQLite.
 - Log trips and see the input events behind the illustrative trip score.
 - Preview pay-per-kilometre, pay-per-trip, and monthly coverage with every estimate itemized.
-- Use Indian rupees, kilometres, India Standard Time, Chennai sample routes, and switch between English and Hindi. Existing accounts receive a backward-compatible language preference defaulting to English.
+- Use Indian rupees, kilometres, India Standard Time, Chennai sample routes, and switch between English, Hindi, Tamil, Malayalam, Telugu, Kannada, Spanish, French, and Arabic. Common interface labels are translated in the built-in catalogues; copy without a translation falls back to English. Existing accounts receive a backward-compatible language preference defaulting to English.
 - See an India-specific safety prompt with emergency number 112 and an explanation that third-party motor insurance is mandatory.
 - Create a claim draft only after the safety prompt; optional trip context excludes exact locations.
 - Toggle precise-location display, pause trip recording, export account data, and reset demo data.
 - Use the sidebar to switch between light and dark mode. The selected theme is saved per account.
+- Adjust reading text size in the Streamlit sidebar; in the standalone dashboard, choose light, soft, or dark appearance and adjust text size from the top bar. Standalone appearance settings are saved in this browser.
+- Use Anaheim as the main interface typeface with script-specific fallbacks, comfortable spacing, and high-visibility keyboard focus states.
+- View all estimates in Indian rupees and distances in kilometres. Existing standalone browser trips saved in miles are converted to kilometres when loaded.
+- Use translucent liquid-glass styling on action buttons, with focus-visible and reduced-motion support.
 
 ## Scoring & pricing (illustrative only)
 

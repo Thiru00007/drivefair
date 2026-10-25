@@ -15,6 +15,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Iterator
 
+from localization import LANGUAGES
 from scoring import score_trip
 
 DEFAULT_DB_PATH = Path(os.environ.get("DRIVEFAIR_DB_PATH", "data/drivefair.db"))
@@ -130,9 +131,10 @@ class DriveFairDatabase:
             connection.close()
 
     def initialize(self) -> None:
+        language_values = ", ".join(f"'{language}'" for language in LANGUAGES)
         with self.connect() as connection:
             connection.executescript(
-                """
+                f"""
                 CREATE TABLE IF NOT EXISTS users (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     email TEXT NOT NULL UNIQUE COLLATE NOCASE,
@@ -143,7 +145,7 @@ class DriveFairDatabase:
                     user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
                     theme TEXT NOT NULL DEFAULT 'light' CHECK(theme IN ('light', 'dark')),
                     plan TEXT NOT NULL DEFAULT 'mile' CHECK(plan IN ('mile', 'journey', 'monthly')),
-                    language TEXT NOT NULL DEFAULT 'English' CHECK(language IN ('English', 'हिन्दी')),
+                    language TEXT NOT NULL DEFAULT 'English' CHECK(language IN ({language_values})),
                     tracking INTEGER NOT NULL DEFAULT 1 CHECK(tracking IN (0, 1)),
                     precise_locations INTEGER NOT NULL DEFAULT 1 CHECK(precise_locations IN (0, 1)),
                     incident_assistance INTEGER NOT NULL DEFAULT 1 CHECK(incident_assistance IN (0, 1)),
@@ -161,7 +163,7 @@ class DriveFairDatabase:
                     duration TEXT NOT NULL,
                     score INTEGER NOT NULL CHECK(score BETWEEN 0 AND 100),
                     event TEXT NOT NULL DEFAULT '',
-                    signals_json TEXT NOT NULL DEFAULT '{}',
+                    signals_json TEXT NOT NULL DEFAULT '{{}}',
                     is_sample INTEGER NOT NULL DEFAULT 0 CHECK(is_sample IN (0, 1)),
                     created_at TEXT NOT NULL
                 );
@@ -187,9 +189,51 @@ class DriveFairDatabase:
             if "language" not in preference_columns:
                 connection.execute(
                     "ALTER TABLE preferences ADD COLUMN language TEXT NOT NULL "
-                    "DEFAULT 'English' CHECK(language IN ('English', 'हिन्दी'))"
+                    f"DEFAULT 'English' CHECK(language IN ({language_values}))"
                 )
+            self._migrate_language_constraint(connection, language_values)
             self._migrate_legacy_sample_trips(connection)
+
+    @staticmethod
+    def _migrate_language_constraint(
+        connection: sqlite3.Connection, language_values: str
+    ) -> None:
+        schema = connection.execute(
+            "SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'preferences'"
+        ).fetchone()
+        if schema is None or all(
+            language in str(schema["sql"]) for language in LANGUAGES
+        ):
+            return
+        connection.execute(
+            f"""
+            CREATE TABLE preferences_new (
+                user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+                theme TEXT NOT NULL DEFAULT 'light' CHECK(theme IN ('light', 'dark')),
+                plan TEXT NOT NULL DEFAULT 'mile' CHECK(plan IN ('mile', 'journey', 'monthly')),
+                language TEXT NOT NULL DEFAULT 'English' CHECK(language IN ({language_values})),
+                tracking INTEGER NOT NULL DEFAULT 1 CHECK(tracking IN (0, 1)),
+                precise_locations INTEGER NOT NULL DEFAULT 1 CHECK(precise_locations IN (0, 1)),
+                incident_assistance INTEGER NOT NULL DEFAULT 1 CHECK(incident_assistance IN (0, 1)),
+                historic_miles REAL NOT NULL DEFAULT 310.686,
+                historic_trips INTEGER NOT NULL DEFAULT 20,
+                historic_events INTEGER NOT NULL DEFAULT 1
+            )
+            """
+        )
+        connection.execute(
+            """
+            INSERT INTO preferences_new(
+                user_id, theme, plan, language, tracking, precise_locations,
+                incident_assistance, historic_miles, historic_trips, historic_events
+            )
+            SELECT user_id, theme, plan, language, tracking, precise_locations,
+                   incident_assistance, historic_miles, historic_trips, historic_events
+            FROM preferences
+            """
+        )
+        connection.execute("DROP TABLE preferences")
+        connection.execute("ALTER TABLE preferences_new RENAME TO preferences")
 
     def create_user(self, email: str, password: str) -> int:
         normalized_email = email.strip().lower()
@@ -284,7 +328,7 @@ class DriveFairDatabase:
         allowed = {
             "theme": ("light", "dark"),
             "plan": ("mile", "journey", "monthly"),
-            "language": ("English", "हिन्दी"),
+            "language": LANGUAGES,
             "tracking": (True, False),
             "precise_locations": (True, False),
             "incident_assistance": (True, False),

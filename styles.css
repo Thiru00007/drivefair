@@ -87,4 +87,96 @@ h1 { margin: 12px 0 6px; font: 700 27px/1.25 Manrope, sans-serif; letter-spacing
 .consent-option span { display: grid; gap: 4px; }
 .consent-option strong { color: #4b594f; font-size: 9px; }
 .consent-option small { color: #879188; font-size: 8px; line-height: 1.5; }
+.top-actions { gap: 12px; }
+.language-select { max-width: 132px; padding: 7px 27px 7px 10px; border: 1px solid rgba(220, 229, 221, .8); border-radius: 8px; color: #405047; background: rgba(255, 255, 255, .68); backdrop-filter: blur(14px) saturate(150%); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .8), 0 3px 12px rgba(24, 45, 31, .06); font-size: 10px; cursor: pointer; }
+.button, .plan-select-button, .sample-option, .icon-button, .trip-detail-button, .modal-close, .nav-item { backdrop-filter: blur(14px) saturate(150%); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .48), 0 3px 12px rgba(24, 45, 31, .055); transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease, background .16s ease; }
+.button-primary { border-color: rgba(255, 255, 255, .35); background: linear-gradient(135deg, rgba(55, 131, 88, .96), rgba(25, 82, 59, .96)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .38), 0 5px 16px rgba(30, 103, 77, .2); }
+.button-primary:hover { background: linear-gradient(135deg, rgba(66, 146, 100, .98), rgba(30, 96, 67, .98)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .48), 0 7px 20px rgba(30, 103, 77, .24); transform: translateY(-1px); }
+.button-secondary, .plan-select-button, .sample-option, .icon-button, .trip-detail-button, .modal-close { background-color: rgba(255, 255, 255, .76); }
+.button-secondary:hover, .plan-select-button:hover, .sample-option:hover, .icon-button:hover, .trip-detail-button:hover, .modal-close:hover { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .85), 0 5px 16px rgba(24, 45, 31, .1); transform: translateY(-1px); }
+.button-danger { background-color: rgba(255, 255, 255, .78); }
+.language-select:focus-visible, button:focus-visible { outline: 2px solid #568b62; outline-offset: 3px; }
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .language-select, .button, .plan-select-button, .sample-option, .icon-button, .trip-detail-button, .modal-close, .nav-item { background-color: #fff; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .language-select, .button, .plan-select-button, .sample-option, .icon-button, .trip-detail-button, .modal-close, .nav-item { transition: none; }
+}
+html[dir="rtl"] .sidebar { inset: 0 0 0 auto; border-right: 0; border-left: 1px solid #eceeea; }
+html[dir="rtl"] .main-content { margin-left: 0; margin-right: 244px; }
+@media (max-width: 1050px) { html[dir="rtl"] .main-content { margin-right: 220px; } }
+@media (max-width: 760px) { html[dir="rtl"] .sidebar { inset: auto 0 0; border-left: 0; }.main-content, html[dir="rtl"] .main-content { margin: 0; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }
+:root { color-scheme: light; --ink: #25312b; --muted: #68766d; --line: #e4e8e1; --paper: #fff; --canvas: #f5f6f3; --green: #286746; --green-dark: #20563c; --mint: #eaf2e9; --shadow: 0 8px 24px rgba(35, 49, 40, .045); }
+body { background: var(--canvas); color: var(--ink); font-family: Anaheim, "Noto Sans Devanagari", "Noto Sans Tamil", "Noto Sans Malayalam", "Noto Sans Telugu", "Noto Sans Kannada", "Noto Sans Arabic", sans-serif; }
+body * { font-family: Anaheim, "Noto Sans Devanagari", "Noto Sans Tamil", "Noto Sans Malayalam", "Noto Sans Telugu", "Noto Sans Kannada", "Noto Sans Arabic", sans-serif; }
+body h1, body h2, body h3, body .brand, body .premium-amount strong, body .currency, body .score-ring strong,
+body .card-heading h2, body .section-heading h2, body .stat-card > strong, body .summary-chip strong,
+body .current-plan-main h2, body .current-estimate strong, body .plan-card h3, body .plan-rate strong,
+body .modal h2, body .profile strong { font-family: Anaheim, "Noto Sans Devanagari", "Noto Sans Tamil", "Noto Sans Malayalam", "Noto Sans Telugu", "Noto Sans Kannada", "Noto Sans Arabic", sans-serif; }
+button, select, input, textarea { font-family: inherit; }
+h1, h2, h3, .brand, .button, .nav-item { font-family: Anaheim, "Noto Sans Devanagari", "Noto Sans Tamil", "Noto Sans Malayalam", "Noto Sans Telugu", "Noto Sans Kannada", "Noto Sans Arabic", sans-serif; }
+.sidebar, .card, .stat-card, .plan-card, .trip-list-card, .full-trip-list, .claim-card, .privacy-settings, .modal, .toast { background-color: var(--paper); border-color: var(--line); box-shadow: var(--shadow); }
+.main-content, .topbar, .premium-amount, .breadcrumbs strong, .card-heading h2, .section-heading h2, .score-ring strong, .stat-card > strong, .profile strong, .trip-place strong, .current-plan-main h2, .plan-card h3, .modal h2 { color: var(--ink); }
+.workspace-label, .eyebrow, .breadcrumbs, .secure-label, .page-intro, .profile span, .card-heading p, .score-ring span, .score-copy p, .score-foot, .amount-period, .mini-breakdown div, .section-heading .inline-link, .stat-label, .trip-place span, .trip-meta, .disclaimer, .summary-chip span:not(.stat-icon), .setting-copy p, .modal-description, .modal-footnote, .pricing-footnote p { color: var(--muted); }
+.help-card, .score-ring::before, .select-wrap select, .modal-close, .sample-option, .claim-details input[type="datetime-local"], .claim-details select, .claim-details textarea, .toast, .language-select, .appearance-select { background-color: var(--paper); color: var(--ink); border-color: var(--line); }
+.language-select, .appearance-select { max-width: 128px; padding: 7px 25px 7px 9px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: rgba(255,255,255,.78); backdrop-filter: blur(14px) saturate(145%); box-shadow: inset 0 1px 0 rgba(255,255,255,.78), 0 3px 12px rgba(24,45,31,.05); font-size: 12px; cursor: pointer; }
+.text-size-select { min-width: 54px; max-width: 58px; font-weight: 700; }
+.top-actions { gap: 8px; }
+body[data-text-size="large"] .app-shell { zoom: 1.06; }
+body[data-text-size="largest"] .app-shell { zoom: 1.12; }
+body[data-theme="soft"] { color-scheme: light; --ink: #353c35; --muted: #71776f; --line: #e7e2d8; --paper: #fffefa; --canvas: #f2efe7; --green: #55755e; --green-dark: #46634e; --mint: #eef0e6; --shadow: 0 8px 24px rgba(62, 57, 43, .045); }
+body[data-theme="soft"] .sidebar { background: #f8f5ed; }
+body[data-theme="soft"] .topbar { border-color: var(--line); }
+body[data-theme="dark"] { color-scheme: dark; --ink: #e5ebe6; --muted: #abb7ae; --line: #34443a; --paper: #202b24; --canvas: #141b16; --green: #9bc9a5; --green-dark: #85b991; --mint: #26392c; --shadow: 0 10px 26px rgba(0,0,0,.16); }
+body[data-theme="dark"] .sidebar { background: #19221c; border-color: var(--line); }
+body[data-theme="dark"] .topbar, body[data-theme="dark"] .profile { border-color: var(--line); }
+body[data-theme="dark"] .brand, body[data-theme="dark"] .breadcrumbs strong, body[data-theme="dark"] h1, body[data-theme="dark"] h2, body[data-theme="dark"] h3,
+body[data-theme="dark"] .profile strong, body[data-theme="dark"] .card-heading h2, body[data-theme="dark"] .score-ring strong,
+body[data-theme="dark"] .premium-amount, body[data-theme="dark"] .current-plan-main h2, body[data-theme="dark"] .stat-card > strong,
+body[data-theme="dark"] .trip-place strong, body[data-theme="dark"] .setting-copy strong, body[data-theme="dark"] .claim-entry-details strong,
+body[data-theme="dark"] .modal, body[data-theme="dark"] .modal h2, body[data-theme="dark"] .plan-card h3, body[data-theme="dark"] .summary-chip strong,
+body[data-theme="dark"] .mini-breakdown strong, body[data-theme="dark"] .pricing-breakdown strong, body[data-theme="dark"] .trip-distance { color: var(--ink); }
+body[data-theme="dark"] .workspace-label, body[data-theme="dark"] .eyebrow, body[data-theme="dark"] .breadcrumbs, body[data-theme="dark"] .secure-label,
+body[data-theme="dark"] .page-intro, body[data-theme="dark"] .profile span, body[data-theme="dark"] .score-ring span,
+body[data-theme="dark"] .score-copy p, body[data-theme="dark"] .score-foot, body[data-theme="dark"] .amount-period,
+body[data-theme="dark"] .mini-breakdown div, body[data-theme="dark"] .section-heading .inline-link, body[data-theme="dark"] .stat-label,
+body[data-theme="dark"] .trip-place span, body[data-theme="dark"] .trip-meta, body[data-theme="dark"] .disclaimer,
+body[data-theme="dark"] .summary-chip span:not(.stat-icon), body[data-theme="dark"] .setting-copy p, body[data-theme="dark"] .modal-description,
+body[data-theme="dark"] .modal-footnote, body[data-theme="dark"] .pricing-footnote p, body[data-theme="dark"] .current-plan-main p,
+body[data-theme="dark"] .pricing-breakdown div, body[data-theme="dark"] .plan-card > p, body[data-theme="dark"] .plan-rate span,
+body[data-theme="dark"] .stat-caption, body[data-theme="dark"] .premium-change, body[data-theme="dark"] .pricing-footnote,
+body[data-theme="dark"] .claim-entry-details p, body[data-theme="dark"] .claim-list-empty p, body[data-theme="dark"] .empty-state { color: var(--muted); }
+body[data-theme="dark"] .help-card, body[data-theme="dark"] .privacy-note, body[data-theme="dark"] .privacy-intro, body[data-theme="dark"] .claims-banner,
+body[data-theme="dark"] .pricing-current, body[data-theme="dark"] .claim-next-step, body[data-theme="dark"] .setting-row,
+body[data-theme="dark"] .trip-row, body[data-theme="dark"] .privacy-settings, body[data-theme="dark"] .plan-card,
+body[data-theme="dark"] .select-wrap select, body[data-theme="dark"] .modal, body[data-theme="dark"] .toast,
+body[data-theme="dark"] .language-select, body[data-theme="dark"] .appearance-select, body[data-theme="dark"] .sample-option,
+body[data-theme="dark"] .trip-detail-button, body[data-theme="dark"] .modal-close, body[data-theme="dark"] .button-secondary,
+body[data-theme="dark"] .button-danger, body[data-theme="dark"] .plan-select-button { background-color: var(--paper); color: var(--ink); border-color: var(--line); }
+body[data-theme="dark"] .help-card { background: #222e26; }
+body[data-theme="dark"] .nav-item { color: var(--muted); }
+body[data-theme="dark"] .nav-item:hover, body[data-theme="dark"] .nav-item.active { color: var(--ink); background: #2b3a2f; }
+body[data-theme="dark"] .button-primary { color: #102018; background: linear-gradient(135deg, #a9d4af, #85bb92); border-color: #bddfc2; box-shadow: inset 0 1px 0 rgba(255,255,255,.55), 0 5px 16px rgba(0,0,0,.18); }
+body[data-theme="dark"] .button-primary:hover { background: linear-gradient(135deg, #bbe0c0, #98caa2); }
+body[data-theme="dark"] .selected .plan-select-button { color: #d2ebd5; background: #2b4031; border-color: #4d7056; }
+body[data-theme="dark"] .score-ring::before { background: var(--paper); }
+body[data-theme="dark"] .trip-table-head { background: #1a241d; color: var(--muted); }
+body[data-theme="dark"] .premium-divider, body[data-theme="dark"] .pricing-breakdown .breakdown-total, body[data-theme="dark"] .trip-row { border-color: var(--line); }
+body[data-theme="dark"] .claims-banner { background: #302b23; border-color: #504437; }
+body[data-theme="dark"] .claims-banner strong, body[data-theme="dark"] .claims-banner p { color: #e1d3bc; }
+body[data-theme="dark"] .privacy-note, body[data-theme="dark"] .privacy-intro { background: #243329; border-color: var(--line); }
+body[data-theme="dark"] .privacy-note strong, body[data-theme="dark"] .privacy-intro strong { color: #c8e0cc; }
+body[data-theme="dark"] .event-badge { background: #45392d; color: #f1c596; }
+body[data-theme="dark"] .event-clear { background: #2a3a2e; color: #b9d2bd; }
+body[data-theme="dark"] .modal::backdrop { background: rgba(6, 12, 8, .78); }
+body[data-theme="dark"] .claim-details input[type="datetime-local"], body[data-theme="dark"] .claim-details select, body[data-theme="dark"] .claim-details textarea { color: var(--ink); background: #18221b; border-color: var(--line); }
+body[data-theme="dark"] .consent-option { border-color: var(--line); }
+body[data-theme="dark"] .consent-option strong { color: var(--ink); }
+body[data-theme="dark"] .consent-option small { color: var(--muted); }
+body[data-theme="dark"] .toast { color: #d7e9d8; background: #202b24; border-color: #405542; }
+body[data-theme="dark"] .nav-item, body[data-theme="dark"] .button, body[data-theme="dark"] .plan-select-button, body[data-theme="dark"] .sample-option,
+body[data-theme="dark"] .icon-button, body[data-theme="dark"] .trip-detail-button, body[data-theme="dark"] .modal-close { box-shadow: inset 0 1px 0 rgba(255,255,255,.07), 0 3px 12px rgba(0,0,0,.12); }
+body[data-theme="dark"] .plan-card.selected { border-color: #64896b; box-shadow: 0 0 0 2px rgba(124,173,132,.12); }
+body[data-theme="dark"] .trip-route-icon, body[data-theme="dark"] .stat-icon { background-color: #2b3b30; color: #bad6bf; }
+@media (max-width: 760px) { .top-actions { gap: 5px; }.secure-label { display: none; }.appearance-select, .language-select { max-width: 94px; padding: 6px 18px 6px 6px; font-size: 10px; }.text-size-select { min-width: 47px; max-width: 50px; } }

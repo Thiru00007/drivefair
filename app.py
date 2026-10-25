@@ -41,7 +41,8 @@ def india_number(value: float | int, decimals: int = 2) -> str:
 
 
 def india_date(now: datetime) -> str:
-    if st.session_state.get("language") == "हिन्दी":
+    language = st.session_state.get("language", "English")
+    if language == "हिन्दी":
         weekdays = ("सोमवार", "मंगलवार", "बुधवार", "गुरुवार", "शुक्रवार", "शनिवार", "रविवार")
         months = (
             "जनवरी", "फ़रवरी", "मार्च", "अप्रैल", "मई", "जून",
@@ -78,19 +79,36 @@ def apply_theme(theme: str) -> None:
     muted = "#a1afa5" if dark else "#768279"
     line = "#334239" if dark else "#e3e9e2"
     green = "#8bc59a" if dark else "#286746"
+    glass = "rgba(255, 255, 255, .14)" if dark else "rgba(255, 255, 255, .78)"
+    glass_hover = "rgba(255, 255, 255, .2)" if dark else "rgba(255, 255, 255, .92)"
+    direction = "rtl" if st.session_state.get("language") == "العربية" else "ltr"
+    font_size = {
+        "Comfortable": "16px",
+        "Large": "18px",
+        "Extra large": "20px",
+    }.get(st.session_state.get("reading-text-size", "Comfortable"), "16px")
     st.markdown(
         f"""
         <style>
+        @import url('https://fonts.googleapis.com/css2?family=Anaheim:wght@400;500;600;700;800&family=Noto+Sans+Arabic:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Noto+Sans+Kannada:wght@400;500;600;700&family=Noto+Sans+Malayalam:wght@400;500;600;700&family=Noto+Sans+Tamil:wght@400;500;600;700&family=Noto+Sans+Telugu:wght@400;500;600;700&display=swap');
         :root {{
           color-scheme: {"dark" if dark else "light"};
           --df-bg: {background}; --df-surface: {surface}; --df-elevated: {elevated};
           --df-text: {text}; --df-muted: {muted}; --df-line: {line}; --df-green: {green};
+          --df-glass: {glass};
+          --df-glass-hover: {glass_hover};
         }}
-        .stApp {{ background: var(--df-bg); color: var(--df-text); }}
+        html {{ font-size: {font_size}; }}
+        .stApp, .stApp button, .stApp input, .stApp textarea, .stApp select,
+        .stApp [data-testid="stMarkdownContainer"], .stApp [data-testid="stWidgetLabel"] {{
+          font-family: Anaheim, "Noto Sans Devanagari", "Noto Sans Tamil", "Noto Sans Malayalam",
+            "Noto Sans Telugu", "Noto Sans Kannada", "Noto Sans Arabic", sans-serif;
+        }}
+        .stApp {{ background: var(--df-bg); color: var(--df-text); direction: {direction}; line-height: 1.6; }}
         [data-testid="stHeader"] {{ background: transparent; }}
         [data-testid="stSidebar"] {{ background: var(--df-surface); border-right: 1px solid var(--df-line); }}
         [data-testid="stSidebar"] * {{ color: var(--df-text); }}
-        .block-container {{ max-width: 1320px; padding-top: 1.5rem; padding-bottom: 4rem; }}
+        .block-container {{ max-width: 1320px; padding-top: 1.75rem; padding-bottom: 4rem; }}
         h1, h2, h3 {{ color: var(--df-text); letter-spacing: -.035em; }}
         p, label, .stCaption, [data-testid="stMarkdownContainer"] {{ color: var(--df-text); }}
         .df-kicker {{ color: var(--df-muted); font-size: .72rem; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }}
@@ -107,6 +125,7 @@ def apply_theme(theme: str) -> None:
         [data-testid="stMetric"] {{ background: var(--df-surface); border: 1px solid var(--df-line); border-radius: 12px; padding: .9rem 1rem; }}
         [data-testid="stMetricLabel"] {{ color: var(--df-muted); }}
         [data-testid="stMetricValue"] {{ color: var(--df-text); }}
+        [data-testid="stMetric"], .df-card, .df-panel {{ box-shadow: 0 8px 24px rgba(20, 35, 25, .05); }}
         [data-testid="stDataFrame"], [data-testid="stTable"] {{ border: 1px solid var(--df-line); border-radius: 10px; overflow: hidden; }}
         div[data-baseweb="input"] > div, div[data-baseweb="select"] > div, textarea {{
           background: var(--df-surface) !important; color: var(--df-text) !important; border-color: var(--df-line) !important;
@@ -115,16 +134,38 @@ def apply_theme(theme: str) -> None:
           background: var(--df-surface) !important; border: 1px solid var(--df-line) !important;
         }}
         [data-testid="stSelectbox"] input[role="combobox"] {{ color: var(--df-text) !important; }}
+        input, textarea {{ caret-color: var(--df-green); }}
+        :focus-visible {{ outline-color: var(--df-green); }}
         [role="listbox"] {{ background: var(--df-surface) !important; }}
         [role="option"] {{ color: var(--df-text) !important; }}
         .stButton > button, .stDownloadButton > button {{
-          background: var(--df-surface); color: var(--df-text);
-          border-radius: 8px; border-color: var(--df-line);
+          background: linear-gradient(145deg, var(--df-glass), rgba(255, 255, 255, .08));
+          color: var(--df-text); border-radius: 10px; border-color: var(--df-line);
+          backdrop-filter: blur(14px) saturate(150%);
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, .58), 0 3px 12px rgba(24, 45, 31, .08);
+          transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
         }}
         .stButton > button:hover, .stDownloadButton > button:hover {{
-          background: var(--df-elevated); color: var(--df-text); border-color: var(--df-line);
+          background: linear-gradient(145deg, var(--df-glass-hover), var(--df-glass));
+          color: var(--df-text); border-color: var(--df-green);
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, .72), 0 6px 18px rgba(24, 45, 31, .12);
+          transform: translateY(-1px);
         }}
-        .stButton > button[kind="primary"] {{ background: #286746; border-color: #286746; color: white; }}
+        .stButton > button:active, .stDownloadButton > button:active {{ transform: translateY(0) scale(.985); }}
+        .stButton > button:focus-visible, .stDownloadButton > button:focus-visible {{
+          outline: 2px solid var(--df-green); outline-offset: 3px;
+        }}
+        .stButton > button[kind="primary"] {{
+          background: linear-gradient(135deg, rgba(61, 137, 94, .96), rgba(34, 95, 63, .96));
+          border-color: rgba(255, 255, 255, .35); color: white;
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35), 0 5px 16px rgba(30, 103, 77, .2);
+        }}
+        .stButton > button[kind="primary"]:hover {{
+          background: linear-gradient(135deg, rgba(69, 148, 103, .98), rgba(36, 100, 67, .98));
+        }}
+        @media (prefers-reduced-motion: reduce) {{
+          .stButton > button, .stDownloadButton > button {{ transition: none; }}
+        }}
         hr {{ border-color: var(--df-line); }}
         </style>
         """,
@@ -686,6 +727,11 @@ def run_app() -> None:
             theme = "dark" if dark_mode else "light"
             db.update_preferences(user_id, theme=theme)
             st.rerun()
+        st.selectbox(
+            "Reading text size",
+            ["Comfortable", "Large", "Extra large"],
+            key="reading-text-size",
+        )
         st.markdown("---")
         page = st.radio(
             T("Your space"),

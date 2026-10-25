@@ -3,11 +3,11 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#f7f8f5">
+    <meta name="theme-color" content="#f5f6f3">
     <title>DriveFair — Insurance that moves with you</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Anaheim:wght@400;500;600;700;800&family=Noto+Sans+Arabic:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Noto+Sans+Kannada:wght@400;500;600;700&family=Noto+Sans+Malayalam:wght@400;500;600;700&family=Noto+Sans+Tamil:wght@400;500;600;700&family=Noto+Sans+Telugu:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
@@ -45,6 +45,29 @@
           <div class="breadcrumbs"><span>My space</span><span class="crumb-divider">/</span><strong id="breadcrumb-current">Overview</strong></div>
           <div class="top-actions">
             <span class="secure-label"><span class="secure-dot"></span> Your data is protected</span>
+            <label class="sr-only" for="theme-select">Appearance</label>
+            <select class="appearance-select" id="theme-select" aria-label="Appearance">
+              <option value="light">Light</option>
+              <option value="soft">Soft</option>
+              <option value="dark">Dark</option>
+            </select>
+            <label class="sr-only" for="text-size-select">Text size</label>
+            <select class="appearance-select text-size-select" id="text-size-select" aria-label="Text size">
+              <option value="normal">A</option>
+              <option value="large">A+</option>
+              <option value="largest">A++</option>
+            </select>
+            <select class="language-select" id="language-select" aria-label="Language">
+              <option value="en">English</option>
+              <option value="ta">தமிழ்</option>
+              <option value="hi">हिन्दी</option>
+              <option value="ml">മലയാളം</option>
+              <option value="te">తెలుగు</option>
+              <option value="kn">ಕನ್ನಡ</option>
+              <option value="es">Español</option>
+              <option value="fr">Français</option>
+              <option value="ar">العربية</option>
+            </select>
             <button class="icon-button notification-button" aria-label="Notifications">♧<i></i></button>
           </div>
         </header>
@@ -71,17 +94,17 @@
 
             <article class="card premium-card">
               <div class="card-heading"><div><div class="eyebrow">THIS MONTH'S ESTIMATE</div><h2>Your premium</h2></div><span class="premium-icon">↗</span></div>
-              <div class="premium-amount"><span class="currency">$</span><strong id="premium-total">64</strong><span class="amount-cents">.80</span><span class="amount-period">/ month</span></div>
-              <div class="premium-change"><span>↓ $8.20</span> from last month</div>
+              <div class="premium-amount"><span class="currency">₹</span><strong id="premium-total">1,055</strong><span class="amount-cents">.50</span><span class="amount-period">/ month</span></div>
+              <div class="premium-change"><span>↓ ₹50.00</span> from last month</div>
               <div class="premium-divider"></div>
-              <div class="mini-breakdown"><div><span>Base coverage</span><strong>$48.00</strong></div><div><span>Driving & distance</span><strong>$22.80</strong></div><div class="discount-row"><span>Safe driver reward</span><strong>−$6.00</strong></div></div>
+              <div class="mini-breakdown"><div><span>Base coverage</span><strong>₹199.00</strong></div><div><span>Driving & distance</span><strong>₹931.50</strong></div><div class="discount-row"><span>Safe driver reward</span><strong>−₹50.00</strong></div></div>
               <button class="inline-link" data-go="pricing">See your full breakdown <span>→</span></button>
             </article>
           </div>
 
           <div class="section-heading"><div><div class="eyebrow">YOUR ACTIVITY</div><h2>It's been a good month on the road.</h2></div><button class="inline-link" data-go="trips">All trips <span>→</span></button></div>
           <div class="stats-grid">
-            <article class="stat-card"><div class="stat-top"><span class="stat-icon icon-miles">↗</span><span class="stat-trend">−12% vs last month</span></div><strong id="miles-stat">386 <small>mi</small></strong><span class="stat-label">Miles driven</span><div class="sparkline spark-green"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></article>
+            <article class="stat-card"><div class="stat-top"><span class="stat-icon icon-miles">↗</span><span class="stat-trend">−12% vs last month</span></div><strong id="miles-stat">621 <small>km</small></strong><span class="stat-label">Distance driven</span><div class="sparkline spark-green"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></article>
             <article class="stat-card"><div class="stat-top"><span class="stat-icon icon-trips">⌁</span><span class="stat-caption">This month</span></div><strong id="trip-count">24</strong><span class="stat-label">Trips completed</span><div class="sparkline spark-blue"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></article>
             <article class="stat-card"><div class="stat-top"><span class="stat-icon icon-events">✳</span><span class="stat-trend">−3 this month</span></div><strong id="event-count">2</strong><span class="stat-label">Driving events</span><div class="sparkline spark-orange"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></article>
           </div>
@@ -93,7 +116,7 @@
 
         <section class="page" id="page-trips">
           <div class="welcome-row page-title-row"><div><div class="eyebrow"><span class="eyebrow-line"></span> YOUR JOURNEYS</div><h1>Every trip tells a story.</h1><p class="page-intro">See how your driving adds up. Your trips belong to you.</p></div><button class="button button-primary" id="trips-log-button"><span class="button-plus">＋</span> Log a trip</button></div>
-          <div class="trip-summary-row"><article class="card summary-chip"><span class="stat-icon icon-miles">↗</span><div><strong id="trip-miles-summary">386 mi</strong><span>Distance this month</span></div></article><article class="card summary-chip"><span class="stat-icon icon-trips">⌁</span><div><strong id="trip-number-summary">24 trips</strong><span>Trips this month</span></div></article><article class="card summary-chip"><span class="stat-icon icon-events">✳</span><div><strong id="average-score-summary">86 / 100</strong><span>Average trip score</span></div></article></div>
+          <div class="trip-summary-row"><article class="card summary-chip"><span class="stat-icon icon-miles">↗</span><div><strong id="trip-miles-summary">621 km</strong><span>Distance this month</span></div></article><article class="card summary-chip"><span class="stat-icon icon-trips">⌁</span><div><strong id="trip-number-summary">24 trips</strong><span>Trips this month</span></div></article><article class="card summary-chip"><span class="stat-icon icon-events">✳</span><div><strong id="average-score-summary">86 / 100</strong><span>Average trip score</span></div></article></div>
           <div class="section-heading trips-section-heading"><div><div class="eyebrow">OCTOBER 2026</div><h2>Recent trips</h2></div><label class="select-wrap"><span class="sr-only">Filter trips</span><select id="trip-filter"><option value="all">All trips</option><option value="careful">Careful trips</option><option value="events">Trips with events</option></select></label></div>
           <div class="card full-trip-list" id="all-trips"></div>
           <div class="privacy-note"><span>◉</span><div><strong>It's your journey data.</strong><p>Only you can see these trip details. Manage what gets collected in <button class="inline-link" data-go="privacy">Privacy & data</button>.</p></div></div>
@@ -109,14 +132,14 @@
 
         <section class="page" id="page-pricing">
           <div class="welcome-row page-title-row"><div><div class="eyebrow"><span class="eyebrow-line"></span> COVER THAT FITS YOUR LIFE</div><h1>Choose how you pay.</h1><p class="page-intro">Switch plans any time. Your estimate updates as you drive.</p></div><span class="member-badge">POLICY DF-2048-0193</span></div>
-          <div class="pricing-current"><div class="current-tag">YOUR CURRENT PLAN</div><div class="current-plan-main"><div><h2 id="selected-plan-name">Pay per mile</h2><p id="selected-plan-desc">A base rate plus the miles you actually drive.</p></div><div class="current-estimate"><strong id="pricing-total">$64.80</strong><span>estimated this month</span></div></div><div class="pricing-breakdown"><div><span>Base coverage <i>?</i></span><strong>$48.00</strong></div><div><span>Distance · 386 mi × $0.059</span><strong>$22.80</strong></div><div><span>Safe driver reward</span><strong class="green-text">−$6.00</strong></div><div class="breakdown-total"><span>Estimated monthly total</span><strong id="breakdown-total">$64.80</strong></div></div></div>
+          <div class="pricing-current"><div class="current-tag">YOUR CURRENT PLAN</div><div class="current-plan-main"><div><h2 id="selected-plan-name">Pay per kilometre</h2><p id="selected-plan-desc">A base rate plus the kilometres you actually drive.</p></div><div class="current-estimate"><strong id="pricing-total">₹1,055.50</strong><span>estimated this month</span></div></div><div class="pricing-breakdown"><div><span>Base coverage <i>?</i></span><strong>₹199.00</strong></div><div><span>Distance · 621 km × ₹1.50</span><strong>₹931.50</strong></div><div><span>Trip score adjustment · avg 90</span><strong>−₹25.00</strong></div><div><span>Safe driver reward</span><strong class="green-text">−₹50.00</strong></div><div class="breakdown-total"><span>Estimated monthly total</span><strong id="breakdown-total">₹1,055.50</strong></div></div></div>
           <div class="section-heading plan-heading"><div><div class="eyebrow">FIND YOUR FIT</div><h2>Plans built around your driving.</h2></div></div>
           <div class="plan-grid">
-            <article class="plan-card selected" data-plan="mile"><div class="plan-card-top"><span class="plan-icon">↗</span><span class="plan-check">✓</span></div><h3>Pay per mile</h3><p>Great if your car spends more time parked.</p><div class="plan-rate"><strong>5.9¢</strong><span>/ mile + $48 base</span></div><button class="plan-select-button" data-select-plan="mile">Current plan</button></article>
-            <article class="plan-card" data-plan="journey"><div class="plan-card-top"><span class="plan-icon icon-blue">⌁</span><span class="plan-check">✓</span></div><h3>Pay per journey</h3><p>Pay a flat amount per trip, with a clear score adjustment.</p><div class="plan-rate"><strong>From $1.20</strong><span>/ journey</span></div><button class="plan-select-button" data-select-plan="journey">See this plan</button></article>
-            <article class="plan-card" data-plan="monthly"><div class="plan-card-top"><span class="plan-icon icon-purple">◈</span><span class="plan-check">✓</span></div><h3>Predictable monthly</h3><p>One steady price, with rewards for safer driving.</p><div class="plan-rate"><strong>$79</strong><span>/ month before rewards</span></div><button class="plan-select-button" data-select-plan="monthly">See this plan</button></article>
+            <article class="plan-card selected" data-plan="mile"><div class="plan-card-top"><span class="plan-icon">↗</span><span class="plan-check">✓</span></div><h3>Pay per kilometre</h3><p>Great if your car spends more time parked.</p><div class="plan-rate"><strong>₹1.50</strong><span>/ km + ₹199 base</span></div><button class="plan-select-button" data-select-plan="mile">Current plan</button></article>
+            <article class="plan-card" data-plan="journey"><div class="plan-card-top"><span class="plan-icon icon-blue">⌁</span><span class="plan-check">✓</span></div><h3>Pay per trip</h3><p>Pay a flat amount per trip, with a clear score adjustment.</p><div class="plan-rate"><strong>From ₹20</strong><span>/ trip</span></div><button class="plan-select-button" data-select-plan="journey">See this plan</button></article>
+            <article class="plan-card" data-plan="monthly"><div class="plan-card-top"><span class="plan-icon icon-purple">◈</span><span class="plan-check">✓</span></div><h3>Predictable monthly</h3><p>One steady price, with rewards for safer driving.</p><div class="plan-rate"><strong>₹699</strong><span>/ month before rewards</span></div><button class="plan-select-button" data-select-plan="monthly">See this plan</button></article>
           </div>
-          <div class="pricing-footnote"><span>ⓘ</span><p>Illustrative demo only, not a binding quote or actual insurance offer. The score adjustment uses (85 − average trip score) × $0.15, capped between −$4 and +$8; it is shown as a separate line. Real rates require insurer-approved actuarial and fairness validation. A driving score is feedback, not a fault decision.</p></div>
+          <div class="pricing-footnote"><span>ⓘ</span><p>Illustrative demo only, not a binding quote or actual insurance offer. The score adjustment uses (85 − average trip score) × ₹5, capped between −₹100 and +₹200; it is shown as a separate line. Real rates require insurer-approved actuarial and fairness validation. A driving score is feedback, not a fault decision.</p></div>
         </section>
 
         <section class="page" id="page-privacy">
@@ -140,9 +163,9 @@
       <form method="dialog"><button class="modal-close" aria-label="Close">×</button></form>
       <div class="modal-icon">⌁</div><div class="eyebrow">ADD TO YOUR JOURNEYS</div><h2>Log a sample trip</h2><p class="modal-description">Choose an example trip to see how DriveFair explains the score and estimate. This creates demo data only.</p>
       <div class="sample-options">
-        <button class="sample-option" data-sample="smooth"><span><strong>Smooth commute</strong><small>12 mi · daytime · no events</small></span><b>＋</b></button>
-        <button class="sample-option" data-sample="mixed"><span><strong>City errands</strong><small>8 mi · daytime · 1 hard brake</small></span><b>＋</b></button>
-        <button class="sample-option" data-sample="night"><span><strong>Evening drive</strong><small>18 mi · evening · smooth driving</small></span><b>＋</b></button>
+        <button class="sample-option" data-sample="smooth"><span><strong>Smooth commute</strong><small>19 km · daytime · no events</small></span><b>＋</b></button>
+        <button class="sample-option" data-sample="mixed"><span><strong>City errands</strong><small>13 km · daytime · 1 hard brake</small></span><b>＋</b></button>
+        <button class="sample-option" data-sample="night"><span><strong>Evening drive</strong><small>29 km · evening · smooth driving</small></span><b>＋</b></button>
       </div>
       <p class="modal-footnote">Sampled sensor data is illustrative and is not used to determine real insurance eligibility or fault.</p>
     </dialog>
