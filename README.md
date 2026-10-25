@@ -1,6 +1,6 @@
 # DriveFair
 
-DriveFair is an India-focused Streamlit hackathon prototype for transparent, usage-based motor insurance. It has account-scoped profiles, an app-owned SQLite database, trip scoring, itemized INR estimates, claim drafts, data export, English, Hindi, Tamil, Malayalam, Telugu, Kannada, Spanish, French, and Arabic interface options, and light/dark themes. The standalone HTML dashboard also offers these languages and liquid-glass button styling.
+DriveFair is an India-focused Streamlit hackathon prototype for transparent, usage-based motor insurance. It has account-scoped profiles, an app-owned SQLite database, trip scoring, itemized INR estimates, claim drafts, data export, English, Hindi, Tamil, Malayalam, Telugu, Kannada, Spanish, French, and Arabic interface options, and light/dark themes. The standalone HTML dashboard also offers these languages, light/soft/dark appearance modes, five accent colours, a rounded Nunito Sans interface, and softly embossed panels.
 
 ## Run locally
 
@@ -27,9 +27,9 @@ By default, SQLite creates `data/drivefair.db`. Change its location with `DRIVEF
 - See an India-specific safety prompt with emergency number 112 and an explanation that third-party motor insurance is mandatory.
 - Create a claim draft only after the safety prompt; optional trip context excludes exact locations.
 - Toggle precise-location display, pause trip recording, export account data, and reset demo data.
-- Use the sidebar to switch between light and dark mode. The selected theme is saved per account.
-- Adjust reading text size in the Streamlit sidebar; in the standalone dashboard, choose light, soft, or dark appearance and adjust text size from the top bar. Standalone appearance settings are saved in this browser.
-- Use Anaheim as the main interface typeface with script-specific fallbacks, comfortable spacing, and high-visibility keyboard focus states.
+- Use the sidebar to switch between light and dark mode and choose from five accent colours. These preferences are saved per account.
+- Adjust reading text size in the Streamlit sidebar; in the standalone dashboard, choose light, soft, or dark appearance, pick from five accent colours, and adjust text size from the top bar. Standalone appearance settings are saved in this browser.
+- Use Nunito Sans as the main interface typeface with script-specific fallbacks, comfortable spacing, rounded embossed surfaces, and high-visibility keyboard focus states.
 - View all estimates in Indian rupees and distances in kilometres. Existing standalone browser trips saved in miles are converted to kilometres when loaded.
 - Use translucent liquid-glass styling on action buttons, with focus-visible and reduced-motion support.
 

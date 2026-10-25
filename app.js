@@ -56,6 +56,7 @@ const defaultState = {
   claims: [],
   language: "en",
   theme: "soft",
+  accent: "green",
   textSize: "normal",
   plan: "mile",
   tracking: true,
@@ -103,11 +104,13 @@ function localizePage() {
 
 function applyAppearance() {
   document.body.dataset.theme = state.theme;
+  document.body.dataset.accent = state.accent;
   document.body.dataset.textSize = state.textSize;
   document.getElementById("theme-select").value = state.theme;
+  document.getElementById("accent-select").value = state.accent;
   document.getElementById("text-size-select").value = state.textSize;
   document.querySelector('meta[name="theme-color"]').content =
-    state.theme === "dark" ? "#151d18" : state.theme === "soft" ? "#f2efe7" : "#f5f6f3";
+    state.theme === "dark" ? "#000000" : state.theme === "soft" ? "#696457" : "#f4f6f1";
 }
 
 function freshDefaultState() {
@@ -149,6 +152,7 @@ function loadState() {
       claims,
       language: ["en", "ta", "hi", "ml", "te", "kn", "es", "fr", "ar"].includes(parsed.language) ? parsed.language : defaultState.language,
       theme: ["light", "soft", "dark"].includes(parsed.theme) ? parsed.theme : defaultState.theme,
+      accent: ["green", "blue", "violet", "rose", "amber"].includes(parsed.accent) ? parsed.accent : defaultState.accent,
       textSize: ["normal", "large", "largest"].includes(parsed.textSize) ? parsed.textSize : defaultState.textSize,
       plan: ["mile", "journey", "monthly"].includes(parsed.plan) ? parsed.plan : defaultState.plan,
       tracking: typeof parsed.tracking === "boolean" ? parsed.tracking : defaultState.tracking,
@@ -381,6 +385,16 @@ document.getElementById("theme-select").addEventListener("change", event => {
   if (!saveState()) {
     state.theme = previousTheme;
     event.currentTarget.value = previousTheme;
+    return;
+  }
+  applyAppearance();
+});
+document.getElementById("accent-select").addEventListener("change", event => {
+  const previousAccent = state.accent;
+  state.accent = event.currentTarget.value;
+  if (!saveState()) {
+    state.accent = previousAccent;
+    event.currentTarget.value = previousAccent;
     return;
   }
   applyAppearance();

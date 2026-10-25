@@ -10,13 +10,20 @@ from zoneinfo import ZoneInfo
 import pandas as pd
 import streamlit as st
 
-from database import KM_PER_MILE, DriveFairDatabase
+from database import ACCENT_COLOURS, KM_PER_MILE, DriveFairDatabase
 from localization import LANGUAGES, translate
 from scoring import PLAN_NAMES, average_score, estimate_premium, score_trip
 
 logging.basicConfig(level=logging.INFO)
 LOGGER = logging.getLogger("drivefair")
 INDIA_TZ = ZoneInfo("Asia/Kolkata")
+ACCENT_LABELS = {
+    "green": "Moss",
+    "blue": "Ocean",
+    "violet": "Violet",
+    "rose": "Rose",
+    "amber": "Amber",
+}
 
 
 def T(text: str) -> str:
@@ -70,15 +77,35 @@ except Exception:
     st.stop()
 
 
-def apply_theme(theme: str) -> None:
+def apply_theme(theme: str, accent: str = "green") -> None:
     dark = theme == "dark"
+    accent_palettes = {
+        "green": ("#286746", "#20563c", "#eaf2e9", "#8bc59a", "#6ea77d", "#26392c"),
+        "blue": ("#365f9c", "#294a7b", "#e9eff8", "#9fc1f5", "#83a9e4", "#263347"),
+        "violet": ("#74579c", "#5d4481", "#f0eafa", "#c4a5ef", "#aa8bd8", "#362b45"),
+        "rose": ("#a14e68", "#813d53", "#faedf1", "#f0a7b8", "#df8fa3", "#402c32"),
+        "amber": ("#92621e", "#744c12", "#f8f0df", "#eac27f", "#d5aa62", "#3c3426"),
+    }
+    if accent not in ACCENT_COLOURS:
+        raise ValueError("Unsupported accent colour.")
+    light_accent, light_accent_dark, light_accent_soft, dark_accent, dark_accent_dark, dark_accent_soft = accent_palettes[accent]
     background = "#101713" if dark else "#f5f7f3"
     surface = "#18221c" if dark else "#ffffff"
     elevated = "#202b24" if dark else "#f4f7f2"
     text = "#edf3ee" if dark else "#1b2820"
     muted = "#a1afa5" if dark else "#768279"
     line = "#334239" if dark else "#e3e9e2"
-    green = "#8bc59a" if dark else "#286746"
+    green = dark_accent if dark else light_accent
+    green_dark = dark_accent_dark if dark else light_accent_dark
+    accent_soft = dark_accent_soft if dark else light_accent_soft
+    primary_text = "#18221c" if dark else "#ffffff"
+    raised_shadow = (
+        "8px 8px 20px rgba(0, 0, 0, .22), -5px -5px 15px rgba(255, 255, 255, .025), "
+        "inset 1px 1px 2px rgba(255, 255, 255, .06)"
+        if dark else
+        "9px 9px 22px rgba(49, 63, 52, .07), -7px -7px 20px rgba(255, 255, 255, .72), "
+        "inset 1px 1px 2px rgba(255, 255, 255, .72)"
+    )
     glass = "rgba(255, 255, 255, .14)" if dark else "rgba(255, 255, 255, .78)"
     glass_hover = "rgba(255, 255, 255, .2)" if dark else "rgba(255, 255, 255, .92)"
     direction = "rtl" if st.session_state.get("language") == "العربية" else "ltr"
@@ -90,45 +117,49 @@ def apply_theme(theme: str) -> None:
     st.markdown(
         f"""
         <style>
-        @import url('https://fonts.googleapis.com/css2?family=Anaheim:wght@400;500;600;700;800&family=Noto+Sans+Arabic:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Noto+Sans+Kannada:wght@400;500;600;700&family=Noto+Sans+Malayalam:wght@400;500;600;700&family=Noto+Sans+Tamil:wght@400;500;600;700&family=Noto+Sans+Telugu:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800&family=Noto+Sans+Arabic:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Noto+Sans+Kannada:wght@400;500;600;700&family=Noto+Sans+Malayalam:wght@400;500;600;700&family=Noto+Sans+Tamil:wght@400;500;600;700&family=Noto+Sans+Telugu:wght@400;500;600;700&display=swap');
         :root {{
           color-scheme: {"dark" if dark else "light"};
           --df-bg: {background}; --df-surface: {surface}; --df-elevated: {elevated};
           --df-text: {text}; --df-muted: {muted}; --df-line: {line}; --df-green: {green};
+          --df-green-dark: {green_dark}; --df-accent-soft: {accent_soft}; --df-primary-text: {primary_text};
           --df-glass: {glass};
           --df-glass-hover: {glass_hover};
+          --df-raised-shadow: {raised_shadow};
         }}
         html {{ font-size: {font_size}; }}
         .stApp, .stApp button, .stApp input, .stApp textarea, .stApp select,
         .stApp [data-testid="stMarkdownContainer"], .stApp [data-testid="stWidgetLabel"] {{
-          font-family: Anaheim, "Noto Sans Devanagari", "Noto Sans Tamil", "Noto Sans Malayalam",
+          font-family: "Nunito Sans", "Noto Sans Devanagari", "Noto Sans Tamil", "Noto Sans Malayalam",
             "Noto Sans Telugu", "Noto Sans Kannada", "Noto Sans Arabic", sans-serif;
         }}
         .stApp {{ background: var(--df-bg); color: var(--df-text); direction: {direction}; line-height: 1.6; }}
         [data-testid="stHeader"] {{ background: transparent; }}
-        [data-testid="stSidebar"] {{ background: var(--df-surface); border-right: 1px solid var(--df-line); }}
+        [data-testid="stSidebar"] {{ background: var(--df-surface); border-right: 0; box-shadow: 8px 0 24px rgba(20, 35, 25, .035); }}
         [data-testid="stSidebar"] * {{ color: var(--df-text); }}
         .block-container {{ max-width: 1320px; padding-top: 1.75rem; padding-bottom: 4rem; }}
         h1, h2, h3 {{ color: var(--df-text); letter-spacing: -.035em; }}
         p, label, .stCaption, [data-testid="stMarkdownContainer"] {{ color: var(--df-text); }}
         .df-kicker {{ color: var(--df-muted); font-size: .72rem; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }}
         .df-subtle {{ color: var(--df-muted); }}
-        .df-card {{ background: var(--df-surface); border: 1px solid var(--df-line); border-radius: 14px; padding: 1.1rem 1.2rem; min-height: 112px; }}
+        .df-card {{ background: var(--df-surface); border: 1px solid var(--df-line); border-radius: 22px; padding: 1.1rem 1.2rem; min-height: 112px; }}
         .df-card-label {{ color: var(--df-muted); font-size: .76rem; font-weight: 650; letter-spacing: .04em; text-transform: uppercase; }}
         .df-card-value {{ color: var(--df-text); font-size: 1.8rem; font-weight: 750; line-height: 1.2; margin-top: .45rem; }}
         .df-card-note {{ color: var(--df-muted); font-size: .82rem; margin-top: .3rem; }}
-        .df-panel {{ background: var(--df-surface); border: 1px solid var(--df-line); border-radius: 14px; padding: 1.25rem; }}
-        .df-banner {{ background: var(--df-elevated); border: 1px solid var(--df-line); border-left: 4px solid #d39a64; border-radius: 10px; padding: .95rem 1rem; }}
+        .df-panel {{ background: var(--df-surface); border: 1px solid var(--df-line); border-radius: 22px; padding: 1.25rem; }}
+        .df-banner {{ background: var(--df-elevated); border: 1px solid var(--df-line); border-radius: 18px; padding: .95rem 1rem; box-shadow: inset 4px 0 0 var(--df-green), var(--df-raised-shadow); }}
         .df-brand {{ font-size: 1.55rem; font-weight: 800; letter-spacing: -.06em; }}
         .df-brand span {{ color: var(--df-green); }}
-        .df-pill {{ background: var(--df-elevated); border: 1px solid var(--df-line); border-radius: 999px; color: var(--df-green); display: inline-block; font-size: .75rem; font-weight: 700; padding: .3rem .65rem; }}
-        [data-testid="stMetric"] {{ background: var(--df-surface); border: 1px solid var(--df-line); border-radius: 12px; padding: .9rem 1rem; }}
+        .df-pill {{ background: var(--df-accent-soft); border: 1px solid var(--df-line); border-radius: 999px; color: var(--df-green); display: inline-block; font-size: .75rem; font-weight: 700; padding: .3rem .65rem; }}
+        [data-testid="stMetric"] {{ background: var(--df-surface); border: 1px solid var(--df-line); border-radius: 20px; padding: .9rem 1rem; }}
         [data-testid="stMetricLabel"] {{ color: var(--df-muted); }}
         [data-testid="stMetricValue"] {{ color: var(--df-text); }}
-        [data-testid="stMetric"], .df-card, .df-panel {{ box-shadow: 0 8px 24px rgba(20, 35, 25, .05); }}
-        [data-testid="stDataFrame"], [data-testid="stTable"] {{ border: 1px solid var(--df-line); border-radius: 10px; overflow: hidden; }}
+        [data-testid="stMetric"], .df-card, .df-panel {{ box-shadow: var(--df-raised-shadow); }}
+        [data-testid="stDataFrame"], [data-testid="stTable"] {{ border: 1px solid var(--df-line); border-radius: 16px; overflow: hidden; }}
+        [data-testid="stAlert"] {{ border: 0; border-radius: 18px; box-shadow: var(--df-raised-shadow); }}
         div[data-baseweb="input"] > div, div[data-baseweb="select"] > div, textarea {{
           background: var(--df-surface) !important; color: var(--df-text) !important; border-color: var(--df-line) !important;
+          border-radius: 14px !important;
         }}
         [data-testid="stSelectbox"] [role="group"] {{
           background: var(--df-surface) !important; border: 1px solid var(--df-line) !important;
@@ -140,7 +171,7 @@ def apply_theme(theme: str) -> None:
         [role="option"] {{ color: var(--df-text) !important; }}
         .stButton > button, .stDownloadButton > button {{
           background: linear-gradient(145deg, var(--df-glass), rgba(255, 255, 255, .08));
-          color: var(--df-text); border-radius: 10px; border-color: var(--df-line);
+          color: var(--df-text); border-radius: 999px; border-color: var(--df-line);
           backdrop-filter: blur(14px) saturate(150%);
           box-shadow: inset 0 1px 0 rgba(255, 255, 255, .58), 0 3px 12px rgba(24, 45, 31, .08);
           transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
@@ -156,12 +187,12 @@ def apply_theme(theme: str) -> None:
           outline: 2px solid var(--df-green); outline-offset: 3px;
         }}
         .stButton > button[kind="primary"] {{
-          background: linear-gradient(135deg, rgba(61, 137, 94, .96), rgba(34, 95, 63, .96));
-          border-color: rgba(255, 255, 255, .35); color: white;
+          background: linear-gradient(135deg, var(--df-green), var(--df-green-dark));
+          border-color: rgba(255, 255, 255, .35); color: var(--df-primary-text);
           box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35), 0 5px 16px rgba(30, 103, 77, .2);
         }}
         .stButton > button[kind="primary"]:hover {{
-          background: linear-gradient(135deg, rgba(69, 148, 103, .98), rgba(36, 100, 67, .98));
+          background: linear-gradient(135deg, var(--df-green-dark), var(--df-green));
         }}
         @media (prefers-reduced-motion: reduce) {{
           .stButton > button, .stDownloadButton > button {{ transition: none; }}
@@ -688,6 +719,7 @@ def render_privacy(
         if st.button(T("Clear my demo data"), disabled=not confirm, type="secondary"):
             db.clear_user_demo_data(user_id)
             st.success(T("Your demo data was cleared and the sample starting view restored."))
+            st.session_state["preferences-reset-for"] = user_id
             st.rerun()
     st.caption(
         T("Demo only. A real insurance product needs durable managed storage, access controls, "
@@ -703,9 +735,15 @@ def run_app() -> None:
 
     user_id = int(account["id"])
     preferences = db.get_preferences(user_id)
+    if st.session_state.pop("preferences-reset-for", None) == user_id:
+        st.session_state["dark_mode"] = preferences["theme"] == "dark"
+        st.session_state["dark-mode-toggle"] = preferences["theme"] == "dark"
+        st.session_state["language"] = preferences["language"]
+        st.session_state["app-language"] = preferences["language"]
+        st.session_state[f"accent-colour-{user_id}"] = ACCENT_LABELS[preferences["accent"]]
     st.session_state.setdefault("language", preferences["language"])
     st.session_state.setdefault("dark_mode", preferences["theme"] == "dark")
-    apply_theme("dark" if st.session_state["dark_mode"] else "light")
+    apply_theme("dark" if st.session_state["dark_mode"] else "light", preferences["accent"])
 
     with st.sidebar:
         st.markdown('<div class="df-brand">drivefair<span>.</span></div>', unsafe_allow_html=True)
@@ -726,6 +764,19 @@ def run_app() -> None:
             st.session_state["dark_mode"] = dark_mode
             theme = "dark" if dark_mode else "light"
             db.update_preferences(user_id, theme=theme)
+            st.rerun()
+        accent_label = st.selectbox(
+            T("Accent colour"),
+            [ACCENT_LABELS[value] for value in ACCENT_COLOURS],
+            index=ACCENT_COLOURS.index(preferences["accent"]),
+            key=f"accent-colour-{user_id}",
+        )
+        accent = next(
+            value for value, label in ACCENT_LABELS.items()
+            if label == accent_label
+        )
+        if accent != preferences["accent"]:
+            db.update_preferences(user_id, accent=accent)
             st.rerun()
         st.selectbox(
             "Reading text size",

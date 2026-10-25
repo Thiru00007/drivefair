@@ -20,6 +20,7 @@ from scoring import score_trip
 
 DEFAULT_DB_PATH = Path(os.environ.get("DRIVEFAIR_DB_PATH", "data/drivefair.db"))
 KM_PER_MILE = 1.60934
+ACCENT_COLOURS = ("green", "blue", "violet", "rose", "amber")
 PASSWORD_ITERATIONS = 310_000
 EMAIL_PATTERN = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
@@ -144,6 +145,7 @@ class DriveFairDatabase:
                 CREATE TABLE IF NOT EXISTS preferences (
                     user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
                     theme TEXT NOT NULL DEFAULT 'light' CHECK(theme IN ('light', 'dark')),
+                    accent TEXT NOT NULL DEFAULT 'green' CHECK(accent IN ('green', 'blue', 'violet', 'rose', 'amber')),
                     plan TEXT NOT NULL DEFAULT 'mile' CHECK(plan IN ('mile', 'journey', 'monthly')),
                     language TEXT NOT NULL DEFAULT 'English' CHECK(language IN ({language_values})),
                     tracking INTEGER NOT NULL DEFAULT 1 CHECK(tracking IN (0, 1)),
@@ -191,6 +193,12 @@ class DriveFairDatabase:
                     "ALTER TABLE preferences ADD COLUMN language TEXT NOT NULL "
                     f"DEFAULT 'English' CHECK(language IN ({language_values}))"
                 )
+            if "accent" not in preference_columns:
+                accent_values = ", ".join(f"'{accent}'" for accent in ACCENT_COLOURS)
+                connection.execute(
+                    "ALTER TABLE preferences ADD COLUMN accent TEXT NOT NULL "
+                    f"DEFAULT 'green' CHECK(accent IN ({accent_values}))"
+                )
             self._migrate_language_constraint(connection, language_values)
             self._migrate_legacy_sample_trips(connection)
 
@@ -210,6 +218,7 @@ class DriveFairDatabase:
             CREATE TABLE preferences_new (
                 user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
                 theme TEXT NOT NULL DEFAULT 'light' CHECK(theme IN ('light', 'dark')),
+                accent TEXT NOT NULL DEFAULT 'green' CHECK(accent IN ('green', 'blue', 'violet', 'rose', 'amber')),
                 plan TEXT NOT NULL DEFAULT 'mile' CHECK(plan IN ('mile', 'journey', 'monthly')),
                 language TEXT NOT NULL DEFAULT 'English' CHECK(language IN ({language_values})),
                 tracking INTEGER NOT NULL DEFAULT 1 CHECK(tracking IN (0, 1)),
@@ -224,10 +233,10 @@ class DriveFairDatabase:
         connection.execute(
             """
             INSERT INTO preferences_new(
-                user_id, theme, plan, language, tracking, precise_locations,
+                user_id, theme, accent, plan, language, tracking, precise_locations,
                 incident_assistance, historic_miles, historic_trips, historic_events
             )
-            SELECT user_id, theme, plan, language, tracking, precise_locations,
+            SELECT user_id, theme, accent, plan, language, tracking, precise_locations,
                    incident_assistance, historic_miles, historic_trips, historic_events
             FROM preferences
             """
@@ -327,6 +336,7 @@ class DriveFairDatabase:
     def update_preferences(self, user_id: int, **values: object) -> None:
         allowed = {
             "theme": ("light", "dark"),
+            "accent": ACCENT_COLOURS,
             "plan": ("mile", "journey", "monthly"),
             "language": LANGUAGES,
             "tracking": (True, False),
@@ -508,7 +518,7 @@ class DriveFairDatabase:
             connection.execute(
                 """
                 UPDATE preferences
-                SET theme = 'light', plan = 'mile', tracking = 1,
+                SET theme = 'light', accent = 'green', plan = 'mile', tracking = 1,
                     precise_locations = 1, incident_assistance = 1,
                     language = 'English', historic_miles = 310.686, historic_trips = 20,
                     historic_events = 1

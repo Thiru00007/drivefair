@@ -159,7 +159,9 @@ class DatabaseTests(unittest.TestCase):
         self.assertEqual(self.db.list_claims(another_user), [])
 
     def test_clear_restores_demo_seed_and_preferences(self) -> None:
-        self.db.update_preferences(self.user_id, theme="dark", plan="journey", tracking=False)
+        self.db.update_preferences(
+            self.user_id, theme="dark", accent="violet", plan="journey", tracking=False
+        )
         self.db.create_claim(
             self.user_id,
             incident_date="2026-10-20",
@@ -171,8 +173,16 @@ class DatabaseTests(unittest.TestCase):
         self.assertEqual(len(self.db.list_trips(self.user_id)), 4)
         self.assertEqual(self.db.list_claims(self.user_id), [])
         self.assertEqual(self.db.get_preferences(self.user_id)["plan"], "mile")
+        self.assertEqual(self.db.get_preferences(self.user_id)["accent"], "green")
         self.assertTrue(self.db.get_preferences(self.user_id)["tracking"])
         self.assertEqual(self.db.get_preferences(self.user_id)["language"], "English")
+
+    def test_accent_preference_persists_and_rejects_unsupported_values(self) -> None:
+        self.assertEqual(self.db.get_preferences(self.user_id)["accent"], "green")
+        self.db.update_preferences(self.user_id, accent="rose")
+        self.assertEqual(self.db.get_preferences(self.user_id)["accent"], "rose")
+        with self.assertRaises(ValueError):
+            self.db.update_preferences(self.user_id, accent="teal")
 
     def test_language_preference_persists_and_rejects_unsupported_values(self) -> None:
         self.db.update_preferences(self.user_id, language="தமிழ்")
@@ -210,7 +220,10 @@ class DatabaseTests(unittest.TestCase):
             connection.execute("DROP TABLE preferences_newer")
 
         self.db.initialize()
+        self.assertEqual(self.db.get_preferences(self.user_id)["accent"], "green")
+        self.db.update_preferences(self.user_id, accent="amber")
         self.db.update_preferences(self.user_id, language="தமிழ்")
+        self.assertEqual(self.db.get_preferences(self.user_id)["accent"], "amber")
         self.assertEqual(self.db.get_preferences(self.user_id)["language"], "தமிழ்")
 
     def test_invalid_registration_and_claim_input_are_rejected(self) -> None:
